@@ -3,6 +3,6 @@ export class Piece {
     this.type = type;
     this.color = color;
   }
-  type = "";
-  color = "";
+  type: String = "";
+  color: String = "";
 }
