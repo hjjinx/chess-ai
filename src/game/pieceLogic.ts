@@ -1,4 +1,11 @@
 import { Piece } from "./Piece";
+import { initiallyCanMoveTo } from "./InitialPosition";
+
+// TODO:
+// en passant
+// Castling
+// Pawn promotion
+// Stalemate
 
 export const Pawn = (
   i: number,
@@ -634,4 +641,46 @@ export const King = (
       }
     }
   }
+};
+
+export const pieceStateUpdate = (board: (Piece | any)[][]) => {
+  console.log(board);
+  let isGivingCheck: number[][];
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      if (board[i][j]) {
+        board[i][j].canMoveTo = initiallyCanMoveTo.map(inner => inner.slice());
+        switch (board[i][j].type) {
+          case "Pawn":
+            const isGivingCheckOrNot = Pawn(
+              i,
+              j,
+              board[i][j].canMoveTo,
+              board,
+              board[i][j].color
+            );
+            // if (isGivingCheckOrNot) isGivingCheck.push([i, j]);
+            // console.log(board[i][j].canMoveTo);
+            break;
+          case "Bishop":
+            Bishop(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            break;
+          case "King":
+            King(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            break;
+          case "Queen":
+            Bishop(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            Rook(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            break;
+          case "Rook":
+            Rook(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            break;
+          case "Knight":
+            Knight(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            break;
+        }
+      }
+    }
+  }
+  return isGivingCheck;
 };

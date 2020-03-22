@@ -3,6 +3,17 @@ export class Piece {
     this.type = type;
     this.color = color;
   }
+
   type: String = "";
   color: String = "";
+  canMoveTo: boolean[][] = [
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false],
+    [false, false, false, false, false, false, false, false]
+  ];
 }

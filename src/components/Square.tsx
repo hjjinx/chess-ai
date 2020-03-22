@@ -11,7 +11,7 @@ interface Props {
 }
 
 const Square: React.FC<Props> = props => {
-  let background = "black";
+  let background = "#C19A6B";
   let color = "white";
 
   if ((props.i + props.k) % 2 == 0) {
@@ -34,7 +34,10 @@ const Square: React.FC<Props> = props => {
         height: 100,
         backgroundColor: background,
         color: color,
-        border: `1px solid ${props.active ? "yellow" : "black"}`
+        border: `${props.active ? "3px" : "1px"} solid ${
+          props.active ? "yellow" : "black"
+        }`,
+        boxSizing: "border-box"
       }}
     >
       {props.rows[props.k] && (
