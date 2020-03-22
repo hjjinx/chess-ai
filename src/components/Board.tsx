@@ -49,8 +49,31 @@ let initialBoard: (Piece | null)[][] = [
   ]
 ];
 
+const initiallyCanMoveTo: boolean[][] = [
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false]
+];
+
 const Board: React.FC = () => {
   const [board, setBoard] = useState(() => initialBoard);
+
+  const [canMoveTo, setCanMoveTo] = useState(() => [...initiallyCanMoveTo]);
+
+  let previousClick: number[] = [];
+  const handleClick = (i: number, k: number) => {
+    setCanMoveTo(canMoveTo => {
+      canMoveTo = initiallyCanMoveTo.map(inner => inner.slice());
+      canMoveTo[i][k] = true;
+      return [...canMoveTo];
+    });
+    previousClick = [i, k];
+  };
 
   return (
     <section className="app_board">
@@ -62,7 +85,8 @@ const Board: React.FC = () => {
               k={k}
               i={i}
               piece={board[i][k]}
-              setBoard={setBoard}
+              handleClick={handleClick}
+              active={canMoveTo[i][k]}
             />
           );
         });

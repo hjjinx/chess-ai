@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Piece } from "../game/Piece";
 
 interface Props {
@@ -6,12 +6,14 @@ interface Props {
   k: number;
   i: number;
   piece: Piece | null;
-  setBoard: React.Dispatch<React.SetStateAction<(Piece | null)[][]>>;
+  handleClick: (i: number, k: number) => void;
+  active: boolean;
 }
 
 const Square: React.FC<Props> = props => {
   let background = "black";
   let color = "white";
+
   if ((props.i + props.k) % 2 == 0) {
     background = "white";
     color = "black";
@@ -21,8 +23,7 @@ const Square: React.FC<Props> = props => {
       console.log("This is null");
       return;
     }
-
-    console.log(props.piece.type);
+    props.handleClick(props.i, props.k);
   };
   return (
     <div
@@ -32,7 +33,8 @@ const Square: React.FC<Props> = props => {
         width: 100,
         height: 100,
         backgroundColor: background,
-        color: color
+        color: color,
+        border: `1px solid ${props.active ? "yellow" : "black"}`
       }}
     >
       {props.rows[props.k] && (
