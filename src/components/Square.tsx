@@ -1,9 +1,12 @@
 import React from "react";
+import { Piece } from "../game/Piece";
 
 interface Props {
   rows: any;
   k: number;
   i: number;
+  piece: Piece | null;
+  setBoard: React.Dispatch<React.SetStateAction<(Piece | null)[][]>>;
 }
 
 const Square: React.FC<Props> = props => {
@@ -13,8 +16,17 @@ const Square: React.FC<Props> = props => {
     background = "white";
     color = "black";
   }
+  const handleClick = () => {
+    if (props.piece == null) {
+      console.log("This is null");
+      return;
+    }
+
+    console.log(props.piece.type);
+  };
   return (
     <div
+      onClick={handleClick}
       style={{
         display: "flex",
         width: 100,
