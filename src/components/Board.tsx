@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { Piece } from "../game/Piece";
 import Square from "../components/Square";
 import { initialBoard, initiallyCanMoveTo } from "../game/InitialPositions";
-import { Pawn } from "../game/pieceLogic";
-//Queen, Bishop, Knight, Rook, King
+import { Pawn, Rook, Knight, Bishop, King } from "../game/pieceLogic";
 
 const Board: React.FC = () => {
   const [board, setBoard] = useState(() => initialBoard);
-  const [previousClick, setPreviousClick] = useState();
+  const [previousClick, setPreviousClick] = useState([4, 4]);
   const [turn, setTurn] = useState("W");
   const [canMoveTo, setCanMoveTo] = useState(() => [...initiallyCanMoveTo]);
 
@@ -16,27 +15,24 @@ const Board: React.FC = () => {
     //check viability
     switch (board[i][k].type) {
       case "Rook":
-        // code block
+        Rook(i, k, canMoveTo, board, turn);
         break;
       case "Bishop":
-        // code block
+        Bishop(i, k, canMoveTo, board, turn);
         break;
       case "Knight":
-        // code block
+        Knight(i, k, canMoveTo, board, turn);
         break;
       case "Queen":
-        // code block
+        Rook(i, k, canMoveTo, board, turn);
+        Bishop(i, k, canMoveTo, board, turn);
         break;
       case "Pawn":
         Pawn(i, k, canMoveTo, board, turn);
-        // code block
         break;
       case "King":
-        // code block
+        King(i, k, canMoveTo, board, turn);
         break;
-
-      default:
-      // code block
     }
 
     canMoveTo[i][k] = true;
@@ -55,9 +51,13 @@ const Board: React.FC = () => {
   };
 
   const handleClick = (i: number, k: number) => {
+    if (board[i][k] && turn !== board[i][k].color) return;
+    if (i === previousClick[0] && k === previousClick[1]) return;
+
     if (canMoveTo[i][k] == true) {
       setBoard(previousBoard => updateBoard(previousBoard, i, k));
       setCanMoveTo(initiallyCanMoveTo.map(inner => inner.slice()));
+      turn === "W" ? setTurn("B") : setTurn("W");
     } else {
       setCanMoveTo(canMoveTo => checkMoveViability(canMoveTo, i, k));
       setPreviousClick([i, k]);
