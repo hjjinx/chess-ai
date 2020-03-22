@@ -1,78 +1,67 @@
 import React, { useState } from "react";
 import { Piece } from "../game/Piece";
 import Square from "../components/Square";
-
-let initialBoard: (Piece | null)[][] = [
-  [
-    new Piece("Rook", "B"),
-    new Piece("Knight", "B"),
-    new Piece("Bishop", "B"),
-    new Piece("Queen", "B"),
-    new Piece("King", "B"),
-    new Piece("Bishop", "B"),
-    new Piece("Knight", "B"),
-    new Piece("Rook", "B")
-  ],
-  [
-    new Piece("Pawn", "B"),
-    new Piece("Pawn", "B"),
-    new Piece("Pawn", "B"),
-    new Piece("Pawn", "B"),
-    new Piece("Pawn", "B"),
-    new Piece("Pawn", "B"),
-    new Piece("Pawn", "B"),
-    new Piece("Pawn", "B")
-  ],
-  [null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null],
-  [
-    new Piece("Pawn", "W"),
-    new Piece("Pawn", "W"),
-    new Piece("Pawn", "W"),
-    new Piece("Pawn", "W"),
-    new Piece("Pawn", "W"),
-    new Piece("Pawn", "W"),
-    new Piece("Pawn", "W"),
-    new Piece("Pawn", "W")
-  ],
-  [
-    new Piece("Rook", "W"),
-    new Piece("Knight", "W"),
-    new Piece("Bishop", "W"),
-    new Piece("Queen", "W"),
-    new Piece("King", "W"),
-    new Piece("Bishop", "W"),
-    new Piece("Knight", "W"),
-    new Piece("Rook", "W")
-  ]
-];
-
-const initiallyCanMoveTo: boolean[][] = [
-  [false, false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false, false]
-];
+import { initialBoard, initiallyCanMoveTo } from "../game/InitialPositions";
+import { Pawn } from "../game/pieceLogic";
+//Queen, Bishop, Knight, Rook, King
 
 const Board: React.FC = () => {
   const [board, setBoard] = useState(() => initialBoard);
-
+  const [previousClick, setPreviousClick] = useState();
+  const [turn, setTurn] = useState("W");
   const [canMoveTo, setCanMoveTo] = useState(() => [...initiallyCanMoveTo]);
 
-  let previousClick: number[] = [];
+  const checkMoveViability = (canMoveTo: boolean[][], i: number, k: number) => {
+    canMoveTo = initiallyCanMoveTo.map(inner => inner.slice());
+    //check viability
+    switch (board[i][k].type) {
+      case "Rook":
+        // code block
+        break;
+      case "Bishop":
+        // code block
+        break;
+      case "Knight":
+        // code block
+        break;
+      case "Queen":
+        // code block
+        break;
+      case "Pawn":
+        Pawn(i, k, canMoveTo, board, turn);
+        // code block
+        break;
+      case "King":
+        // code block
+        break;
+
+      default:
+      // code block
+    }
+
+    canMoveTo[i][k] = true;
+    return [...canMoveTo];
+  };
+
+  const updateBoard = (
+    previousBoard: (Piece | any)[][],
+    i: number,
+    k: number
+  ) => {
+    let newBoard = previousBoard.map(inner => inner.slice());
+    newBoard[previousClick[0]][previousClick[1]] = null;
+    newBoard[i][k] = previousBoard[previousClick[0]][previousClick[1]];
+    return newBoard;
+  };
+
   const handleClick = (i: number, k: number) => {
-    setCanMoveTo(canMoveTo => {
-      canMoveTo = initiallyCanMoveTo.map(inner => inner.slice());
-      canMoveTo[i][k] = true;
-      return [...canMoveTo];
-    });
-    previousClick = [i, k];
+    if (canMoveTo[i][k] == true) {
+      setBoard(previousBoard => updateBoard(previousBoard, i, k));
+      setCanMoveTo(initiallyCanMoveTo.map(inner => inner.slice()));
+    } else {
+      setCanMoveTo(canMoveTo => checkMoveViability(canMoveTo, i, k));
+      setPreviousClick([i, k]);
+    }
   };
 
   return (
