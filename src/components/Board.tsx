@@ -72,6 +72,7 @@ const Board: React.FC = () => {
                 rows={rows}
                 k={k}
                 i={i}
+                key={`${i}_${k}`}
                 piece={board[i][k]}
                 handleClick={handleClick}
                 active={canMoveToHighlighted[i][k]}

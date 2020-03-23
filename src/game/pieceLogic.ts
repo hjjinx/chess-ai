@@ -4,83 +4,11 @@ import { initiallyCanMoveTo } from "./InitialPosition";
 // TODO:
 // en passant
 // Castling
-// Pawn promotion
 // Stalemate
 
-export const Pawn = (
-  i: number,
-  j: number,
-  canMoveTo: boolean[][],
-  Board: (Piece | any)[][],
-  turn: String
-) => {
-  let isGivingCheck: boolean = false;
-  if (turn === "W") {
-    if (i === 0) {
-      // pawn promotion
-      const pieceRef = Board[i][j];
-      pieceRef.type = "Queen";
-      Bishop(i, j, pieceRef.canMoveTo, Board, "W");
-      Rook(i, j, pieceRef.canMoveTo, Board, "W");
-      return;
-    }
+// Done:
+// Pawn promotion
 
-    // if turn is white, pawns move above.
-    if (Board[i - 1][j] === null) {
-      canMoveTo[i - 1][j] = true; //Highlighting the box below the pawn.
-      if (!Board[i][j].hasMovedBefore && Board[i - 2][j] === null)
-        canMoveTo[i - 2][j] = true;
-    }
-
-    if (j !== 0) {
-      let left = Board[i - 1][j - 1];
-      if (left !== null) {
-        if (left.color === "B") canMoveTo[i - 1][j - 1] = true;
-        if (left.type == "King") isGivingCheck = true;
-      }
-    }
-    if (j !== 7) {
-      let right = Board[i - 1][j + 1];
-      if (right !== null) {
-        if (right.color === "B") canMoveTo[i - 1][j + 1] = true;
-        if (right.type == "King") isGivingCheck = true;
-      }
-    }
-  }
-
-  if (turn === "B") {
-    if (i === 7) {
-      // pawn promotion
-      let pieceRef = Board[i][j];
-      pieceRef.type = "Queen";
-      Bishop(i, j, pieceRef.canMoveTo, Board, "B");
-      Rook(i, j, pieceRef.canMoveTo, Board, "B");
-      return;
-    }
-    // if turn is black, pawns move below.
-    if (Board[i + 1][j] === null) {
-      canMoveTo[i + 1][j] = true; //Highlighting the box above the pawn.
-      if (!Board[i][j].hasMovedBefore && Board[i + 2][j] === null)
-        canMoveTo[i + 2][j] = true;
-    }
-
-    if (j !== 0) {
-      let left = Board[i + 1][j - 1];
-      if (left !== null) {
-        if (left.color === "W") canMoveTo[i + 1][j - 1] = true;
-        if (left.type === "King") isGivingCheck = true;
-      }
-    }
-    if (j !== 7) {
-      let right = Board[i + 1][j + 1];
-      if (right !== null) {
-        if (right.color === "W") canMoveTo[i + 1][j + 1] = true;
-        if (right.type == "King") isGivingCheck = true;
-      }
-    }
-  }
-  return isGivingCheck;
-};
 export const Rook = (
   i: number,
   j: number,
@@ -273,127 +201,66 @@ export const Bishop = (
 ) => {
   let isGivingCheck = false;
   //bishop can move in 4 directions.
-  if (turn === "W") {
-    for (let r = 1; r < 8; r++) {
-      // up-right.
-      if (i - r >= 0 && j + r <= 7) {
-        const piece = Board[i - r][j + r];
-        if (piece === null) canMoveTo[i - r][j + r] = true;
-        else {
-          if (piece.color === "B") {
-            if (piece.type === "King") isGivingCheck = true;
-            canMoveTo[i - r][j + r] = true;
-            break;
-          } else break;
-        }
-      }
-    }
-
-    for (let r = 1; r < 8; r++) {
-      // down-right.
-      if (i + r <= 7 && j + r <= 7) {
-        let unit = Board[i + r][j + r];
-        if (unit === null) canMoveTo[i + r][j + r] = true;
-        else {
-          unit = unit.color;
-          if (unit === "B") {
-            canMoveTo[i + r][j + r] = true;
-            break;
-          } else break;
-        }
-      }
-    }
-
-    for (let r = 1; r < 8; r++) {
-      // left bottom.
-      if (i + r <= 7 && j - r >= 0) {
-        let unit = Board[i + r][j - r];
-        if (unit === null) canMoveTo[i + r][j - r] = true;
-        else {
-          unit = unit.color;
-          if (unit === "B") {
-            canMoveTo[i + r][j - r] = true;
-            break;
-          } else break;
-        }
-      }
-    }
-
-    for (let r = 1; r < 8; r++) {
-      // left top.
-      if (i - r >= 0 && j - r >= 0) {
-        let unit = Board[i - r][j - r];
-        if (unit === null) canMoveTo[i - r][j - r] = true;
-        else {
-          unit = unit.color;
-          if (unit === "B") {
-            canMoveTo[i - r][j - r] = true;
-            break;
-          } else break;
-        }
-      }
-    }
-  } else {
-    for (let r = 1; r < 8; r++) {
-      // right top.
-      if (i - r >= 0 && j + r <= 7) {
-        let unit = Board[i - r][j + r];
-        if (unit === null) canMoveTo[i - r][j + r] = true;
-        else {
-          unit = unit.color;
-          if (unit === "W") {
-            canMoveTo[i - r][j + r] = true;
-            break;
-          } else break;
-        }
-      }
-    }
-
-    for (let r = 1; r < 8; r++) {
-      // right bottom.
-      if (i + r <= 7 && j + r <= 7) {
-        let unit = Board[i + r][j + r];
-        if (unit === null) canMoveTo[i + r][j + r] = true;
-        else {
-          unit = unit.color;
-          if (unit === "W") {
-            canMoveTo[i + r][j + r] = true;
-            break;
-          } else break;
-        }
-      }
-    }
-
-    for (let r = 1; r < 8; r++) {
-      // left bottom.
-      if (i + r <= 7 && j - r >= 0) {
-        let unit = Board[i + r][j - r];
-        if (unit === null) canMoveTo[i + r][j - r] = true;
-        else {
-          unit = unit.color;
-          if (unit === "W") {
-            canMoveTo[i + r][j - r] = true;
-            break;
-          } else break;
-        }
-      }
-    }
-
-    for (let r = 1; r < 8; r++) {
-      // left top.
-      if (i - r >= 0 && j - r >= 0) {
-        let unit = Board[i - r][j - r];
-        if (unit === null) canMoveTo[i - r][j - r] = true;
-        else {
-          unit = unit.color;
-          if (unit === "W") {
-            canMoveTo[i - r][j - r] = true;
-            break;
-          } else break;
-        }
+  for (let r = 1; r < 8; r++) {
+    // up-right.
+    if (i - r >= 0 && j + r <= 7) {
+      const piece = Board[i - r][j + r];
+      if (piece === null) canMoveTo[i - r][j + r] = true;
+      else {
+        if (piece.color !== turn) {
+          if (piece.type === "King") isGivingCheck = true;
+          canMoveTo[i - r][j + r] = true;
+          break;
+        } else break;
       }
     }
   }
+
+  for (let r = 1; r < 8; r++) {
+    // down-right.
+    if (i + r <= 7 && j + r <= 7) {
+      let piece = Board[i + r][j + r];
+      if (piece === null) canMoveTo[i + r][j + r] = true;
+      else {
+        if (piece.color !== turn) {
+          if (piece.type === "King") isGivingCheck = true;
+          canMoveTo[i + r][j + r] = true;
+          break;
+        } else break;
+      }
+    }
+  }
+
+  for (let r = 1; r < 8; r++) {
+    // left bottom.
+    if (i + r <= 7 && j - r >= 0) {
+      let piece = Board[i + r][j - r];
+      if (piece === null) canMoveTo[i + r][j - r] = true;
+      else {
+        if (piece.color !== turn) {
+          if (piece.type === "King") isGivingCheck = true;
+          canMoveTo[i + r][j - r] = true;
+          break;
+        } else break;
+      }
+    }
+  }
+
+  for (let r = 1; r < 8; r++) {
+    // left top.
+    if (i - r >= 0 && j - r >= 0) {
+      let piece = Board[i - r][j - r];
+      if (piece === null) canMoveTo[i - r][j - r] = true;
+      else {
+        if (piece.color !== turn) {
+          if (piece.type === "King") isGivingCheck = true;
+          canMoveTo[i - r][j - r] = true;
+          break;
+        } else break;
+      }
+    }
+  }
+
   return isGivingCheck;
 };
 export const King = (
@@ -403,151 +270,167 @@ export const King = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
+  if (i >= 1) {
+    let unit = Board[i - 1][j];
+    if (unit === null) canMoveTo[i - 1][j] = true;
+    else {
+      if (unit.color !== turn) canMoveTo[i - 1][j] = true;
+    }
+
+    if (j >= 1) {
+      let unit = Board[i - 1][j - 1];
+      if (unit === null) canMoveTo[i - 1][j - 1] = true;
+      else if (unit.color !== turn) canMoveTo[i - 1][j - 1] = true;
+    }
+    if (j <= 6) {
+      let unit = Board[i - 1][j + 1];
+      if (unit === null) canMoveTo[i - 1][j + 1] = true;
+      else if (unit.color !== turn) canMoveTo[i - 1][j + 1] = true;
+    }
+  }
+
+  if (i <= 6) {
+    let unit = Board[i + 1][j];
+    if (unit === null) canMoveTo[i + 1][j] = true;
+    else if (unit.color !== turn) canMoveTo[i + 1][j] = true;
+
+    if (j >= 1) {
+      let unit = Board[i + 1][j - 1];
+      if (unit === null) canMoveTo[i + 1][j - 1] = true;
+      else if (unit.color !== turn) canMoveTo[i + 1][j - 1] = true;
+    }
+    if (j <= 6) {
+      let unit = Board[i + 1][j + 1];
+      if (unit === null) canMoveTo[i + 1][j + 1] = true;
+      else if (unit.color !== turn) canMoveTo[i + 1][j + 1] = true;
+    }
+  }
+
+  if (j >= 1) {
+    let unit = Board[i][j - 1];
+    if (unit === null) canMoveTo[i][j - 1] = true;
+    else if (unit.color !== turn) canMoveTo[i][j - 1] = true;
+  }
+
+  if (j <= 6) {
+    let unit = Board[i][j + 1];
+    if (unit === null) canMoveTo[i][j + 1] = true;
+    else if (unit.color !== turn) canMoveTo[i][j + 1] = true;
+  }
+};
+export const Pawn = (
+  i: number,
+  j: number,
+  canMoveTo: boolean[][],
+  Board: (Piece | any)[][],
+  turn: String
+) => {
+  let isGivingCheck: boolean = false;
   if (turn === "W") {
-    if (i >= 1) {
-      let unit = Board[i - 1][j];
-      if (unit === null) canMoveTo[i - 1][j] = true;
-      else {
-        unit = unit.color;
-        if (unit === "B") canMoveTo[i - 1][j] = true;
-      }
+    if (i === 0) {
+      // pawn promotion
+      const pieceRef = Board[i][j];
+      pieceRef.type = "Queen";
+      isGivingCheck = Bishop(
+        i,
+        j,
+        Board[i][j].canMoveTo,
+        Board,
+        Board[i][j].color
+      );
+      if (isGivingCheck)
+        Rook(i, j, Board[i][j].canMoveTo, Board, Board[i][j].color);
+      else
+        isGivingCheck = Rook(
+          i,
+          j,
+          Board[i][j].canMoveTo,
+          Board,
+          Board[i][j].color
+        );
+      return;
+    }
+    // if turn is white, pawns move above.
+    if (Board[i - 1][j] === null) {
+      canMoveTo[i - 1][j] = true; //Highlighting the box below the pawn.
+      if (!Board[i][j].hasMovedBefore && Board[i - 2][j] === null)
+        canMoveTo[i - 2][j] = true;
+    }
 
-      if (j >= 1) {
-        let unit = Board[i - 1][j - 1];
-        if (unit === null) canMoveTo[i - 1][j - 1] = true;
-        else {
-          unit = unit.color;
-          if (unit === "B") canMoveTo[i - 1][j - 1] = true;
-        }
-      }
-      if (j <= 6) {
-        let unit = Board[i - 1][j + 1];
-        if (unit === null) canMoveTo[i - 1][j + 1] = true;
-        else {
-          unit = unit.color;
-          if (unit === "B") canMoveTo[i - 1][j + 1] = true;
+    if (j !== 0) {
+      let left = Board[i - 1][j - 1];
+      if (left !== null) {
+        if (left.color === "B") {
+          if (left.type == "King") isGivingCheck = true;
+          canMoveTo[i - 1][j - 1] = true;
         }
       }
     }
-
-    if (i <= 6) {
-      let unit = Board[i + 1][j];
-      if (unit === null) canMoveTo[i + 1][j] = true;
-      else {
-        unit = unit.color;
-        if (unit === "B") canMoveTo[i + 1][j] = true;
-      }
-
-      if (j >= 1) {
-        let unit = Board[i + 1][j - 1];
-        if (unit === null) canMoveTo[i + 1][j - 1] = true;
-        else {
-          unit = unit.color;
-          if (unit === "B") canMoveTo[i + 1][j - 1] = true;
+    if (j !== 7) {
+      let right = Board[i - 1][j + 1];
+      if (right !== null) {
+        if (right.color === "B") {
+          if (right.type == "King") isGivingCheck = true;
+          canMoveTo[i - 1][j + 1] = true;
         }
-      }
-      if (j <= 6) {
-        let unit = Board[i + 1][j + 1];
-        if (unit === null) canMoveTo[i + 1][j + 1] = true;
-        else {
-          unit = unit.color;
-          if (unit === "B") canMoveTo[i + 1][j + 1] = true;
-        }
-      }
-    }
-
-    if (j >= 1) {
-      let unit = Board[i][j - 1];
-      if (unit === null) canMoveTo[i][j - 1] = true;
-      else {
-        unit = unit.color;
-        if (unit === "B") canMoveTo[i][j - 1] = true;
-      }
-    }
-
-    if (j <= 6) {
-      let unit = Board[i][j + 1];
-      if (unit === null) canMoveTo[i][j + 1] = true;
-      else {
-        unit = unit.color;
-        if (unit === "B") canMoveTo[i][j + 1] = true;
-      }
-    }
-  } else {
-    if (i >= 1) {
-      let unit = Board[i - 1][j];
-      if (unit === null) canMoveTo[i - 1][j] = true;
-      else {
-        unit = unit.color;
-        if (unit === "W") canMoveTo[i - 1][j] = true;
-      }
-
-      if (j >= 1) {
-        let unit = Board[i - 1][j - 1];
-        if (unit === null) canMoveTo[i - 1][j - 1] = true;
-        else {
-          unit = unit.color;
-          if (unit === "W") canMoveTo[i - 1][j - 1] = true;
-        }
-      }
-      if (j <= 6) {
-        let unit = Board[i - 1][j + 1];
-        if (unit === null) canMoveTo[i - 1][j + 1] = true;
-        else {
-          unit = unit.color;
-          if (unit === "W") canMoveTo[i - 1][j + 1] = true;
-        }
-      }
-    }
-
-    if (i <= 6) {
-      let unit = Board[i + 1][j];
-      if (unit === null) canMoveTo[i + 1][j] = true;
-      else {
-        unit = unit.color;
-        if (unit === "W") canMoveTo[i + 1][j] = true;
-      }
-
-      if (j >= 1) {
-        let unit = Board[i + 1][j - 1];
-        if (unit === null) canMoveTo[i + 1][j - 1] = true;
-        else {
-          unit = unit.color;
-          if (unit === "W") canMoveTo[i + 1][j - 1] = true;
-        }
-      }
-      if (j <= 6) {
-        let unit = Board[i + 1][j + 1];
-        if (unit === null) canMoveTo[i + 1][j + 1] = true;
-        else {
-          unit = unit.color;
-          if (unit === "W") canMoveTo[i + 1][j + 1] = true;
-        }
-      }
-    }
-
-    if (j >= 1) {
-      let unit = Board[i][j - 1];
-      if (unit === null) canMoveTo[i][j - 1] = true;
-      else {
-        unit = unit.color;
-        if (unit === "W") canMoveTo[i][j - 1] = true;
-      }
-    }
-
-    if (j <= 6) {
-      let unit = Board[i][j + 1];
-      if (unit === null) canMoveTo[i][j + 1] = true;
-      else {
-        unit = unit.color;
-        if (unit === "W") canMoveTo[i][j + 1] = true;
       }
     }
   }
+
+  if (turn === "B") {
+    if (i === 7) {
+      // pawn promotion
+      const pieceRef = Board[i][j];
+      pieceRef.type = "Queen";
+      isGivingCheck = Bishop(
+        i,
+        j,
+        Board[i][j].canMoveTo,
+        Board,
+        Board[i][j].color
+      );
+      if (isGivingCheck)
+        Rook(i, j, Board[i][j].canMoveTo, Board, Board[i][j].color);
+      else
+        isGivingCheck = Rook(
+          i,
+          j,
+          Board[i][j].canMoveTo,
+          Board,
+          Board[i][j].color
+        );
+      return;
+    }
+    // if turn is black, pawns move below.
+    if (Board[i + 1][j] === null) {
+      canMoveTo[i + 1][j] = true; //Highlighting the box above the pawn.
+      if (!Board[i][j].hasMovedBefore && Board[i + 2][j] === null)
+        canMoveTo[i + 2][j] = true;
+    }
+
+    if (j !== 0) {
+      let left = Board[i + 1][j - 1];
+      if (left !== null) {
+        if (left.color === "W") {
+          if (left.type === "King") isGivingCheck = true;
+          canMoveTo[i + 1][j - 1] = true;
+        }
+      }
+    }
+    if (j !== 7) {
+      let right = Board[i + 1][j + 1];
+      if (right !== null) {
+        if (right.color === "W") {
+          if (right.type == "King") isGivingCheck = true;
+          canMoveTo[i + 1][j + 1] = true;
+        }
+      }
+    }
+  }
+  return isGivingCheck;
 };
 
 export const pieceStateUpdate = (board: (Piece | any)[][]) => {
-  console.log(board);
   let piecesGivingCheck: number[][] = [];
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
