@@ -16,4 +16,5 @@ export class Piece {
     [false, false, false, false, false, false, false, false],
     [false, false, false, false, false, false, false, false]
   ];
+  hasMovedBefore: boolean = false;
 }

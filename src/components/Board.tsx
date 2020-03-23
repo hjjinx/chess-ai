@@ -10,7 +10,7 @@ const Board: React.FC = () => {
   const [board, setBoard] = useState(() => initialBoard);
   const [previousClick, setPreviousClick] = useState([4, 4]);
   const [turn, setTurn] = useState("W");
-  const [isCheckMate, setIsCheckMate] = useState(false);
+  const [isCheck, setIsCheck] = useState(false);
   const [canMoveToHighlighted, setCanMoveToHighlighted] = useState(() => [
     ...initiallyCanMoveTo
   ]);
@@ -20,29 +20,36 @@ const Board: React.FC = () => {
     i: number,
     k: number
   ) => {
+    setIsCheck(false);
     let newBoard = previousBoard.map(inner => inner.slice());
     newBoard[previousClick[0]][previousClick[1]] = null;
     if (newBoard[i][k] && newBoard[i][k].type === "King") {
       alert("Game over");
     }
     newBoard[i][k] = previousBoard[previousClick[0]][previousClick[1]];
+    newBoard[i][k].hasMovedBefore = true;
 
-    // An array of (isUnderCheck = [[i, k,], [i, k]]) piece locations that are contributing to the check right now.
-    const isUnderCheck = pieceStateUpdate(newBoard);
+    // (piecesGivingCheck = [[i, k,], [i, k]]) piece locations that can directly kill the King in the next turn
+    const piecesGivingCheck = pieceStateUpdate(newBoard);
+    if (piecesGivingCheck.length > 0) setIsCheck(true);
+
     return newBoard;
   };
 
   const handleClick = (i: number, k: number) => {
+    // If it's W's turn and they click B's Piece
     if (
       board[i][k] &&
       turn !== board[i][k].color &&
       !canMoveToHighlighted[i][k]
     )
       return;
+
+    // If clicking on the same box that the user previously clicked
     if (i === previousClick[0] && k === previousClick[1]) return;
 
+    // If the Piece that the user previously clicked on can move to [i, k]
     if (canMoveToHighlighted[i][k] == true) {
-      // If can move to i, k; then move here
       setBoard(previousBoard => updateBoard(previousBoard, i, k));
       setCanMoveToHighlighted(initiallyCanMoveTo.map(inner => inner.slice()));
       turn === "W" ? setTurn("B") : setTurn("W");
@@ -55,22 +62,25 @@ const Board: React.FC = () => {
   };
 
   return (
-    <section className="app_board" style={{ margin: "auto" }}>
-      {board.map((rows: Piece[][] | any, i: number) => {
-        return rows.map((col: Piece[], k: number) => {
-          return (
-            <Square
-              rows={rows}
-              k={k}
-              i={i}
-              piece={board[i][k]}
-              handleClick={handleClick}
-              active={canMoveToHighlighted[i][k]}
-            />
-          );
-        });
-      })}
-    </section>
+    <div>
+      Is Under Check: {JSON.stringify(isCheck)}
+      <section className="app_board" style={{ margin: "auto" }}>
+        {board.map((rows: Piece[][] | any, i: number) => {
+          return rows.map((col: Piece[], k: number) => {
+            return (
+              <Square
+                rows={rows}
+                k={k}
+                i={i}
+                piece={board[i][k]}
+                handleClick={handleClick}
+                active={canMoveToHighlighted[i][k]}
+              />
+            );
+          });
+        })}
+      </section>
+    </div>
   );
 };
 
