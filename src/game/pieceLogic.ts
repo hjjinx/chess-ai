@@ -270,6 +270,20 @@ export const King = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
+  let king = Board[i][j];
+  let rook = Board[i][j + 3];
+  // Castling:
+  // The king and rook involved in castling must not have previously moved
+  // There must be no pieces between the king and the rook;
+  //
+  if (
+    !king.hasMovedBefore &&
+    !rook.hasMovedBefore &&
+    Board[i][j + 1] === null &&
+    Board[i][j + 2] === null
+  ) {
+    canMoveTo[i][j + 2] = true;
+  }
   if (i >= 1) {
     let unit = Board[i - 1][j];
     if (unit === null) canMoveTo[i - 1][j] = true;
@@ -434,7 +448,7 @@ export const pieceStateUpdate = (board: (Piece | any)[][]) => {
   let piecesGivingCheck: number[][] = [];
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
-      let isGivingCheck: boolean | undefined;
+      let isGivingCheck: boolean | undefined = false;
       if (board[i][j]) {
         board[i][j].canMoveTo = initiallyCanMoveTo.map(inner => inner.slice());
         switch (board[i][j].type) {

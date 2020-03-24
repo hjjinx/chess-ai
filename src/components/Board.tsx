@@ -26,6 +26,18 @@ const Board: React.FC = () => {
     if (newBoard[i][k] && newBoard[i][k].type === "King") {
       alert("Game over");
     }
+    // Check for Castling:
+    if (
+      k === 6 &&
+      (i === 0 || i === 7) &&
+      previousClick[1] === 4 &&
+      (previousClick[0] === 0 || previousClick[0] === 7)
+    ) {
+      newBoard[i][k - 1] =
+        previousBoard[previousClick[0]][previousClick[1] + 3];
+      newBoard[i][7] = null;
+      newBoard[i][k - 1].hasMovedBefore = true;
+    }
     newBoard[i][k] = previousBoard[previousClick[0]][previousClick[1]];
     newBoard[i][k].hasMovedBefore = true;
 
