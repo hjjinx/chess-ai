@@ -3,10 +3,10 @@ import { initiallyCanMoveTo } from "./InitialPosition";
 
 // TODO:
 // en passant
-// Castling
 // Stalemate
 
 // Done:
+// Castling
 // Pawn promotion
 
 export const Rook = (
@@ -270,20 +270,30 @@ export const King = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
-  let king = Board[i][j];
-  let rook = Board[i][j + 3];
   // Castling:
-  // The king and rook involved in castling must not have previously moved
-  // There must be no pieces between the king and the rook;
-  //
-  if (
-    !king.hasMovedBefore &&
-    !rook.hasMovedBefore &&
-    Board[i][j + 1] === null &&
-    Board[i][j + 2] === null
-  ) {
-    canMoveTo[i][j + 2] = true;
+  if (Board[i][j + 3] && Board[i][j + 3].type === "Rook") {
+    let king = Board[i][j];
+    let rook = Board[i][j + 3];
+    // The king and rook involved in castling must not have previously moved;
+    // There must be no pieces between the king and the rook;
+    if (
+      !king.hasMovedBefore &&
+      !rook.hasMovedBefore &&
+      Board[i][j + 1] === null &&
+      Board[i][j + 2] === null
+    ) {
+      // The king may not currently be in check, nor may the king pass through or end up in a square that is under
+      // attack by an enemy piece;
+      // checking whether the king would be under check if castling did happen:
+      const board = Board.map(inner => inner.slice());
+      board[i][j + 1] = Object.assign({}, Board[i][j + 3]);
+      board[i][j + 2] = Object.assign({}, Board[i][j]);
+      board[i][j] = null;
+      board[i][j + 3] = null;
+      if (pieceStateUpdate(board).length == 0) canMoveTo[i][j + 2] = true;
+    }
   }
+
   if (i >= 1) {
     let unit = Board[i - 1][j];
     if (unit === null) canMoveTo[i - 1][j] = true;

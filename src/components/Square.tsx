@@ -19,10 +19,7 @@ const Square: React.FC<Props> = props => {
     color = "black";
   }
   const handleClick = () => {
-    if (props.piece == null && !props.active) {
-      console.log("This is null");
-      return;
-    }
+    if (props.piece == null && !props.active) return;
     props.handleClick(props.i, props.k);
   };
   return (
