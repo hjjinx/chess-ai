@@ -277,15 +277,15 @@ export const King = (
     // The king and rook involved in castling must not have previously moved;
     // There must be no pieces between the king and the rook;
     if (
-      !king.hasMovedBefore &&
-      !rook.hasMovedBefore &&
+      king.numOfMoves === 0 &&
+      rook.numOfMoves === 0 &&
       Board[i][j + 1] === null &&
       Board[i][j + 2] === null
     ) {
       // The king may not currently be in check, nor may the king pass through or end up in a square that is under
       // attack by an enemy piece;
       // checking whether the king would be under check if castling did happen:
-      const board = Board.map(inner => inner.slice());
+      const board = Board.map((inner) => inner.slice());
       board[i][j + 1] = Object.assign({}, Board[i][j + 3]);
       board[i][j + 2] = Object.assign({}, Board[i][j]);
       board[i][j] = null;
@@ -350,6 +350,7 @@ export const Pawn = (
   turn: String
 ) => {
   let isGivingCheck: boolean = false;
+  Board[i][j].turnsSinceLastMove++;
   if (turn === "W") {
     if (i === 0) {
       // pawn promotion
@@ -374,30 +375,44 @@ export const Pawn = (
         );
       return;
     }
-    // if turn is white, pawns move above.
+    // if turn is white, pawns move up.
     if (Board[i - 1][j] === null) {
       canMoveTo[i - 1][j] = true; //Highlighting the box below the pawn.
-      if (!Board[i][j].hasMovedBefore && Board[i - 2][j] === null)
+      if (Board[i][j].numOfMoves === 0 && Board[i - 2][j] === null)
         canMoveTo[i - 2][j] = true;
     }
 
     if (j !== 0) {
-      let left = Board[i - 1][j - 1];
-      if (left !== null) {
-        if (left.color === "B") {
-          if (left.type == "King") isGivingCheck = true;
+      const upLeft = Board[i - 1][j - 1];
+      const left = Board[i][j - 1];
+      if (upLeft !== null) {
+        if (upLeft.color === "B") {
+          if (upLeft.type == "King") isGivingCheck = true;
           canMoveTo[i - 1][j - 1] = true;
         }
-      }
+      } else if (
+        i === 3 &&
+        left &&
+        left.numOfMoves === 1 &&
+        left.turnsSinceLastMove === 1
+      )
+        canMoveTo[i - 1][j - 1] = true;
     }
     if (j !== 7) {
-      let right = Board[i - 1][j + 1];
-      if (right !== null) {
-        if (right.color === "B") {
-          if (right.type == "King") isGivingCheck = true;
+      const upRight = Board[i - 1][j + 1];
+      const right = Board[i][j + 1];
+      if (upRight !== null) {
+        if (upRight.color === "B") {
+          if (upRight.type == "King") isGivingCheck = true;
           canMoveTo[i - 1][j + 1] = true;
         }
-      }
+      } else if (
+        i === 3 &&
+        right &&
+        right.numOfMoves === 1 &&
+        right.turnsSinceLastMove === 0
+      )
+        canMoveTo[i - 1][j + 1] = true;
     }
   }
 
@@ -428,27 +443,41 @@ export const Pawn = (
     // if turn is black, pawns move below.
     if (Board[i + 1][j] === null) {
       canMoveTo[i + 1][j] = true; //Highlighting the box above the pawn.
-      if (!Board[i][j].hasMovedBefore && Board[i + 2][j] === null)
+      if (Board[i][j].numOfMoves === 0 && Board[i + 2][j] === null)
         canMoveTo[i + 2][j] = true;
     }
 
     if (j !== 0) {
-      let left = Board[i + 1][j - 1];
-      if (left !== null) {
-        if (left.color === "W") {
-          if (left.type === "King") isGivingCheck = true;
+      const upLeft = Board[i + 1][j - 1];
+      const left = Board[i][j - 1];
+      if (upLeft !== null) {
+        if (upLeft.color === "W") {
+          if (upLeft.type === "King") isGivingCheck = true;
           canMoveTo[i + 1][j - 1] = true;
         }
-      }
+      } else if (
+        i === 4 &&
+        left &&
+        left.numOfMoves === 1 &&
+        left.turnsSinceLastMove === 1
+      )
+        canMoveTo[i + 1][j - 1] = true;
     }
     if (j !== 7) {
-      let right = Board[i + 1][j + 1];
-      if (right !== null) {
-        if (right.color === "W") {
-          if (right.type == "King") isGivingCheck = true;
+      const upRight = Board[i + 1][j + 1];
+      const right = Board[i][j + 1];
+      if (upRight !== null) {
+        if (upRight.color === "W") {
+          if (upRight.type == "King") isGivingCheck = true;
           canMoveTo[i + 1][j + 1] = true;
         }
-      }
+      } else if (
+        i === 4 &&
+        right &&
+        right.numOfMoves === 1 &&
+        right.turnsSinceLastMove === 0
+      )
+        canMoveTo[i + 1][j + 1] = true;
     }
   }
   return isGivingCheck;
@@ -460,7 +489,9 @@ export const pieceStateUpdate = (board: (Piece | any)[][]) => {
     for (let j = 0; j < 8; j++) {
       let isGivingCheck: boolean | undefined = false;
       if (board[i][j]) {
-        board[i][j].canMoveTo = initiallyCanMoveTo.map(inner => inner.slice());
+        board[i][j].canMoveTo = initiallyCanMoveTo.map((inner) =>
+          inner.slice()
+        );
         switch (board[i][j].type) {
           case "Pawn":
             isGivingCheck = Pawn(

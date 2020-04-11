@@ -10,7 +10,7 @@ interface Props {
   active: boolean;
 }
 
-const Square: React.FC<Props> = props => {
+const Square: React.FC<Props> = (props) => {
   let background = "rgb(208, 139, 76)";
   let color = "white";
 
@@ -38,7 +38,7 @@ const Square: React.FC<Props> = props => {
         //   props.active ? "yellow" : "black"
         // }`,
         border: `1px solid black  `,
-        boxSizing: "border-box"
+        boxSizing: "border-box",
       }}
     >
       {props.rows[props.k] && (
@@ -47,7 +47,7 @@ const Square: React.FC<Props> = props => {
             props.rows[props.k].type
           }.png`}
           alt="b bishop"
-          style={{ margin: "auto" }}
+          style={{ margin: "auto", height: "80%" }}
         />
       )}
     </div>

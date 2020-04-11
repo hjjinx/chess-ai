@@ -12,7 +12,7 @@ const Board: React.FC = () => {
   const [turn, setTurn] = useState("W");
   const [isCheck, setIsCheck] = useState(false);
   const [canMoveToHighlighted, setCanMoveToHighlighted] = useState(() => [
-    ...initiallyCanMoveTo
+    ...initiallyCanMoveTo,
   ]);
 
   const updateBoard = (
@@ -21,7 +21,7 @@ const Board: React.FC = () => {
     k: number
   ) => {
     setIsCheck(false);
-    let newBoard = previousBoard.map(inner => inner.slice());
+    let newBoard = previousBoard.map((inner) => inner.slice());
     newBoard[previousClick[0]][previousClick[1]] = null;
     if (newBoard[i][k] && newBoard[i][k].type === "King") {
       alert("Game over");
@@ -36,10 +36,22 @@ const Board: React.FC = () => {
       newBoard[i][k - 1] =
         previousBoard[previousClick[0]][previousClick[1] + 3];
       newBoard[i][7] = null;
-      newBoard[i][k - 1].hasMovedBefore = true;
+      newBoard[i][k - 1].numOfMoves++;
     }
+
+    // Check for En Passant:
+    if (
+      (i === 2 &&
+        previousBoard[i + 1][k] &&
+        previousBoard[i + 1][k].type === "Pawn") ||
+      (i === 5 &&
+        previousBoard[i - 1][k] &&
+        previousBoard[i - 1][k].type === "Pawn")
+    )
+      newBoard[i === 2 ? 3 : 4][k] = null;
     newBoard[i][k] = previousBoard[previousClick[0]][previousClick[1]];
-    newBoard[i][k].hasMovedBefore = true;
+    newBoard[i][k].numOfMoves++;
+    newBoard[i][k].turnsSinceLastMove = 0;
 
     // (piecesGivingCheck = [[i, k,], [i, k]]) piece locations that can directly kill the King in the next turn
     const piecesGivingCheck = pieceStateUpdate(newBoard);
@@ -62,11 +74,11 @@ const Board: React.FC = () => {
 
     // If the Piece that the user previously clicked on can move to [i, k]
     if (canMoveToHighlighted[i][k] == true) {
-      setBoard(previousBoard => updateBoard(previousBoard, i, k));
-      setCanMoveToHighlighted(initiallyCanMoveTo.map(inner => inner.slice()));
+      setBoard((previousBoard) => updateBoard(previousBoard, i, k));
+      setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
       turn === "W" ? setTurn("B") : setTurn("W");
     } else {
-      setCanMoveToHighlighted(canMoveTo =>
+      setCanMoveToHighlighted((canMoveTo) =>
         board[i][k].canMoveTo.map((inner: any): boolean[] => inner.slice())
       );
       setPreviousClick([i, k]);

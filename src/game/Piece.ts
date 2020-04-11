@@ -14,7 +14,8 @@ export class Piece {
     [false, false, false, false, false, false, false, false],
     [false, false, false, false, false, false, false, false],
     [false, false, false, false, false, false, false, false],
-    [false, false, false, false, false, false, false, false]
+    [false, false, false, false, false, false, false, false],
   ];
-  hasMovedBefore: boolean = false;
+  numOfMoves: number = 0;
+  turnsSinceLastMove: number = 0;
 }
