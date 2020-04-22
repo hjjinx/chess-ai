@@ -43,10 +43,12 @@ const Board: React.FC = () => {
     if (
       (i === 2 &&
         previousBoard[i + 1][k] &&
-        previousBoard[i + 1][k].type === "Pawn") ||
+        previousBoard[i + 1][k].type === "Pawn" &&
+        previousBoard[previousClick[0]][previousClick[1]].type === "Pawn") ||
       (i === 5 &&
         previousBoard[i - 1][k] &&
-        previousBoard[i - 1][k].type === "Pawn")
+        previousBoard[i - 1][k].type === "Pawn" &&
+        previousBoard[previousClick[0]][previousClick[1]].type === "Pawn")
     )
       newBoard[i === 2 ? 3 : 4][k] = null;
     newBoard[i][k] = previousBoard[previousClick[0]][previousClick[1]];
