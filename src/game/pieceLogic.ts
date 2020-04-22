@@ -38,9 +38,19 @@ export const Rook = (
     }
   }
   if (i !== 7) {
+    // console.log("Board: ", i, j, Board);
     for (let r = i + 1; r <= 7; r++) {
       //For boxes above the rook.
       let unit = Board[r][j];
+
+      let newBoard = Board.map((inner) => inner.slice());
+      newBoard[r][j] = newBoard[i][j];
+      newBoard[i][j] = null;
+      // console.log("New Board: ", newBoard);
+      // If the new state of the board after this move happens results in the player being under check,
+      // then that move will not be possible.
+      if (isUnderCheck(newBoard, turn === "W" ? "B" : "W")) continue;
+
       if (unit === null) canMoveTo[r][j] = true;
       else {
         if (unit.color !== turn) {
@@ -607,44 +617,46 @@ const PawnGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
 };
 
 const RookGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
-  let isGivingCheck: boolean = false;
   if (i !== 0) {
     for (let r = i - 1; r >= 0; r--) {
       let unit = Board[r][j];
-      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
-        isGivingCheck = true;
+      if (unit && (unit.type !== "King" || unit.color === Board[i][j].color))
         break;
-      }
+      if (unit && unit.color !== Board[i][j].color && unit.type === "King")
+        return true;
     }
   }
   if (i !== 7) {
     for (let r = i + 1; r <= 7; r++) {
       let unit = Board[r][j];
-      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
-        isGivingCheck = true;
+      if (unit && (unit.type !== "King" || unit.color === Board[i][j].color))
         break;
+      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
+        return true;
       }
     }
   }
   if (j !== 0) {
     for (let r = j - 1; r >= 0; r--) {
       let unit = Board[r][j];
-      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
-        isGivingCheck = true;
+      if (unit && (unit.type !== "King" || unit.color === Board[i][j].color))
         break;
+      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
+        return true;
       }
     }
   }
   if (j !== 7) {
     for (let r = j + 1; r <= 7; r++) {
       let unit = Board[r][j];
-      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
-        isGivingCheck = true;
+      if (unit && (unit.type !== "King" || unit.color === Board[i][j].color))
         break;
+      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
+        return true;
       }
     }
   }
-  return isGivingCheck;
+  return false;
 };
 
 // checkForWhom will be opposite color of the piece that called this function.
@@ -652,11 +664,12 @@ const isUnderCheck = (board: (Piece | any)[][], checkForWhom: String) => {
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       if (board[i][j] && board[i][j].color === checkForWhom) {
+        // console.log(board[i][j].type, i, j);
         let isGivingCheck: boolean | undefined = false;
         switch (board[i][j].type) {
-          case "Pawn":
-            isGivingCheck = PawnGivesCheck(i, j, board);
-            break;
+          // case "Pawn":
+          //   isGivingCheck = PawnGivesCheck(i, j, board);
+          //   break;
           // case "Bishop":
           //   isGivingCheck = Bishop(
           //     i,
@@ -682,7 +695,7 @@ const isUnderCheck = (board: (Piece | any)[][], checkForWhom: String) => {
           //   }
           //   break;
           case "Rook":
-            isGivingCheck = RookGivesCheck(i, j, board[i][j].canMoveTo);
+            isGivingCheck = RookGivesCheck(i, j, board);
             break;
           // case "Knight":
           //   isGivingCheck = Knight(
