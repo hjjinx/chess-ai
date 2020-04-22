@@ -286,11 +286,16 @@ export const King = (
       // attack by an enemy piece;
       // checking whether the king would be under check if castling did happen:
       const board = Board.map((inner) => inner.slice());
+      console.log("OLD:");
+      console.log(Board);
       board[i][j + 1] = Object.assign({}, Board[i][j + 3]);
       board[i][j + 2] = Object.assign({}, Board[i][j]);
       board[i][j] = null;
       board[i][j + 3] = null;
-      if (pieceStateUpdate(board).length == 0) canMoveTo[i][j + 2] = true;
+      if (!isUnderCheck(board, turn === "W" ? "B" : "W"))
+        canMoveTo[i][j + 2] = true;
+      console.log("NEW:");
+      console.log(Board);
     }
   }
 
@@ -563,4 +568,70 @@ export const pieceStateUpdate = (board: (Piece | any)[][]) => {
     }
   }
   return piecesGivingCheck;
+};
+
+// checkForWhom will be opposite color of the piece that called this function.
+const isUnderCheck = (board: (Piece | any)[][], checkForWhom: String) => {
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board.length; j++) {
+      if (board[i][j] && board[i][j].color === checkForWhom) {
+        let isGivingCheck: boolean | undefined = false;
+        switch (board[i][j].type) {
+          case "Pawn":
+            isGivingCheck = Pawn(
+              i,
+              j,
+              board[i][j].canMoveTo,
+              board,
+              board[i][j].color
+            );
+            break;
+          case "Bishop":
+            isGivingCheck = Bishop(
+              i,
+              j,
+              board[i][j].canMoveTo,
+              board,
+              board[i][j].color
+            );
+            break;
+          case "King":
+            King(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            break;
+          case "Queen":
+            isGivingCheck = Bishop(
+              i,
+              j,
+              board[i][j].canMoveTo,
+              board,
+              board[i][j].color
+            );
+            if (!isGivingCheck) {
+              Rook(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            }
+            break;
+          case "Rook":
+            isGivingCheck = Rook(
+              i,
+              j,
+              board[i][j].canMoveTo,
+              board,
+              board[i][j].color
+            );
+            break;
+          case "Knight":
+            isGivingCheck = Knight(
+              i,
+              j,
+              board[i][j].canMoveTo,
+              board,
+              board[i][j].color
+            );
+            break;
+        }
+        if (isGivingCheck) return true;
+      }
+    }
+  }
+  return false;
 };
