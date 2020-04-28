@@ -4,7 +4,7 @@ import Square from "../components/Square";
 import { initialBoard, initiallyCanMoveTo } from "../game/InitialPosition";
 import { pieceStateUpdate } from "../game/pieceLogic";
 
-pieceStateUpdate(initialBoard);
+pieceStateUpdate(initialBoard, "B");
 
 const Board: React.FC = () => {
   const [board, setBoard] = useState(() => initialBoard);
@@ -14,16 +14,20 @@ const Board: React.FC = () => {
   const [canMoveToHighlighted, setCanMoveToHighlighted] = useState(() => [
     ...initiallyCanMoveTo,
   ]);
+  const clickNothing = () =>
+    setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
 
-  const updateBoard = (
+  const movePiece = (
     previousBoard: (Piece | any)[][],
     i: number,
     k: number
   ) => {
     setIsCheck(false);
+    // Create a copy of the previous board
     let newBoard = previousBoard.map((inner) => inner.slice());
     newBoard[previousClick[0]][previousClick[1]] = null;
     if (newBoard[i][k] && newBoard[i][k].type === "King") {
+      // Game over here
       alert("Game over");
     }
     // Check for Castling:
@@ -56,7 +60,7 @@ const Board: React.FC = () => {
     newBoard[i][k].turnsSinceLastMove = 0;
 
     // (piecesGivingCheck = [[i, k,], [i, k]]) piece locations that can directly kill the King in the next turn
-    const piecesGivingCheck = pieceStateUpdate(newBoard);
+    const piecesGivingCheck = pieceStateUpdate(newBoard, turn);
     if (piecesGivingCheck.length > 0) setIsCheck(true);
 
     return newBoard;
@@ -76,7 +80,7 @@ const Board: React.FC = () => {
 
     // If the Piece that the user previously clicked on can move to [i, k]
     if (canMoveToHighlighted[i][k] == true) {
-      setBoard((previousBoard) => updateBoard(previousBoard, i, k));
+      setBoard((previousBoard) => movePiece(previousBoard, i, k));
       setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
       turn === "W" ? setTurn("B") : setTurn("W");
     } else {
@@ -95,6 +99,7 @@ const Board: React.FC = () => {
           return rows.map((col: Piece[], k: number) => {
             return (
               <Square
+                clickNothing={clickNothing}
                 rows={rows}
                 k={k}
                 i={i}

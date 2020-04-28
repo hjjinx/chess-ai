@@ -7,6 +7,7 @@ interface Props {
   i: number;
   piece: Piece | null;
   handleClick: (i: number, k: number) => void;
+  clickNothing: () => void;
   active: boolean;
 }
 
@@ -19,8 +20,8 @@ const Square: React.FC<Props> = (props) => {
     color = "black";
   }
   const handleClick = () => {
-    if (props.piece == null && !props.active) return;
-    props.handleClick(props.i, props.k);
+    if (props.piece == null && !props.active) props.clickNothing();
+    else props.handleClick(props.i, props.k);
   };
   return (
     <div
