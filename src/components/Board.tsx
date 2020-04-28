@@ -35,7 +35,8 @@ const Board: React.FC = () => {
       k === 6 &&
       (i === 0 || i === 7) &&
       previousClick[1] === 4 &&
-      (previousClick[0] === 0 || previousClick[0] === 7)
+      (previousClick[0] === 0 || previousClick[0] === 7) &&
+      previousBoard[previousClick[0]][previousClick[1]].type === "King"
     ) {
       newBoard[i][k - 1] =
         previousBoard[previousClick[0]][previousClick[1] + 3];
