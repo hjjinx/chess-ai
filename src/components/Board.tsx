@@ -14,8 +14,10 @@ const Board: React.FC = () => {
   const [canMoveToHighlighted, setCanMoveToHighlighted] = useState(() => [
     ...initiallyCanMoveTo,
   ]);
-  const clickNothing = () =>
+  const clickNothing = () => {
     setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
+    setPreviousClick([9, 9]);
+  };
 
   const movePiece = (
     previousBoard: (Piece | any)[][],
@@ -30,6 +32,7 @@ const Board: React.FC = () => {
       // Game over here
       alert("Game over");
     }
+
     // Check for Castling:
     if (
       k === 6 &&
@@ -38,8 +41,7 @@ const Board: React.FC = () => {
       (previousClick[0] === 0 || previousClick[0] === 7) &&
       previousBoard[previousClick[0]][previousClick[1]].type === "King"
     ) {
-      newBoard[i][k - 1] =
-        previousBoard[previousClick[0]][previousClick[1] + 3];
+      newBoard[i][k - 1] = previousBoard[previousClick[0]][7];
       newBoard[i][7] = null;
       newBoard[i][k - 1].numOfMoves++;
     }
@@ -56,6 +58,7 @@ const Board: React.FC = () => {
         previousBoard[previousClick[0]][previousClick[1]].type === "Pawn")
     )
       newBoard[i === 2 ? 3 : 4][k] = null;
+
     newBoard[i][k] = previousBoard[previousClick[0]][previousClick[1]];
     newBoard[i][k].numOfMoves++;
     newBoard[i][k].turnsSinceLastMove = 0;

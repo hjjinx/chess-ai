@@ -16,91 +16,98 @@ export const Rook = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
+  const doesThisHorizontalMoveResultInCheck = (r: number, j: number) => {
+    // If the new state of the board after the move happens results in the player being under check,
+    // then that move will not be possible.
+    let newBoard = Board.map((inner) => inner.slice());
+    newBoard[i][r] = newBoard[i][j];
+    newBoard[i][j] = null;
+    return isUnderCheck(newBoard, turn === "W" ? "B" : "W");
+  };
+  const doesThisVerticalMoveResultInCheck = (r: number, j: number) => {
+    // If the new state of the board after the move happens results in the player being under check,
+    // then that move will not be possible.
+    let newBoard = Board.map((inner) => inner.slice());
+    newBoard[r][j] = newBoard[i][j];
+    newBoard[i][j] = null;
+    return isUnderCheck(newBoard, turn === "W" ? "B" : "W");
+  };
+
   let isGivingCheck: boolean = false;
   if (i !== 0) {
     for (let r = i - 1; r >= 0; r--) {
       //For boxes above the rook.
-      let unit = Board[r][j];
+      const piece = Board[r][j];
 
-      let newBoard = Board.map((inner) => inner.slice());
-      newBoard[r][j] = newBoard[i][j];
-      newBoard[i][j] = null;
-      // If the new state of the board after this move happens results in the player being under check,
-      // then that move will not be possible.
-      if (isUnderCheck(newBoard, turn === "W" ? "B" : "W")) continue;
+      if (piece) {
+        if (piece.color === turn) break;
+        if (doesThisVerticalMoveResultInCheck(r, j)) break;
+      } else if (doesThisVerticalMoveResultInCheck(r, j)) continue;
 
-      if (unit === null) canMoveTo[r][j] = true;
+      if (piece === null) canMoveTo[r][j] = true;
       else {
-        if (unit.color !== turn) {
-          if (unit.type === "King") isGivingCheck = true;
+        if (piece.color !== turn) {
+          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[r][j] = true;
-          break;
-        } else break;
+        }
+        break;
       }
     }
   }
   if (i !== 7) {
-    // console.log("Board: ", i, j, Board);
     for (let r = i + 1; r <= 7; r++) {
-      //For boxes above the rook.
-      let unit = Board[r][j];
+      //For boxes below the rook.
+      const piece = Board[r][j];
 
-      let newBoard = Board.map((inner) => inner.slice());
-      newBoard[r][j] = newBoard[i][j];
-      newBoard[i][j] = null;
-      // console.log("New Board: ", newBoard);
-      // If the new state of the board after this move happens results in the player being under check,
-      // then that move will not be possible.
-      if (isUnderCheck(newBoard, turn === "W" ? "B" : "W")) continue;
+      if (piece) {
+        if (piece.color === turn) break;
+        if (doesThisVerticalMoveResultInCheck(r, j)) break;
+      } else if (doesThisVerticalMoveResultInCheck(r, j)) continue;
 
-      if (unit === null) canMoveTo[r][j] = true;
+      if (piece === null) canMoveTo[r][j] = true;
       else {
-        if (unit.color !== turn) {
-          if (unit.type === "King") isGivingCheck = true;
+        if (piece.color !== turn) {
+          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[r][j] = true;
-          break;
-        } else break;
+        }
+        break;
       }
     }
   }
   if (j !== 0) {
     for (let r = j - 1; r >= 0; r--) {
       //For boxes left to the rook.
-      let unit = Board[i][r];
+      const piece = Board[i][r];
 
-      let newBoard = Board.map((inner) => inner.slice());
-      newBoard[r][j] = newBoard[i][j];
-      newBoard[i][j] = null;
-      // If the new state of the board after this move happens results in the player being under check,
-      // then that move will not be possible.
-      if (isUnderCheck(newBoard, turn === "W" ? "B" : "W")) continue;
+      if (piece) {
+        if (piece.color === turn) break;
+        if (doesThisHorizontalMoveResultInCheck(i, r)) break;
+      } else if (doesThisHorizontalMoveResultInCheck(i, r)) continue;
 
-      if (unit === null) canMoveTo[i][r] = true;
+      if (piece === null) canMoveTo[i][r] = true;
       else {
-        if (unit.color !== turn) {
-          if (unit.type === "King") isGivingCheck = true;
+        if (piece.color !== turn) {
+          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i][r] = true;
-          break;
-        } else break;
+        }
+        break;
       }
     }
   }
   if (j !== 7) {
     for (let r = j + 1; r <= 7; r++) {
       //For boxes right to the rook.
-      let unit = Board[i][r];
+      const piece = Board[i][r];
 
-      let newBoard = Board.map((inner) => inner.slice());
-      newBoard[r][j] = newBoard[i][j];
-      newBoard[i][j] = null;
-      // If the new state of the board after this move happens results in the player being under check,
-      // then that move will not be possible.
-      if (isUnderCheck(newBoard, turn === "W" ? "B" : "W")) continue;
+      if (piece) {
+        if (piece.color === turn) break;
+        if (doesThisHorizontalMoveResultInCheck(i, r)) break;
+      } else if (doesThisHorizontalMoveResultInCheck(i, r)) continue;
 
-      if (unit === null) canMoveTo[i][r] = true;
+      if (piece === null) canMoveTo[i][r] = true;
       else {
-        if (unit.color !== turn) {
-          if (unit.type === "King") isGivingCheck = true;
+        if (piece.color !== turn) {
+          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i][r] = true;
           break;
         } else break;
@@ -671,7 +678,7 @@ const RookGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
   }
   if (j !== 0) {
     for (let r = j - 1; r >= 0; r--) {
-      let unit = Board[r][j];
+      let unit = Board[i][r];
       if (
         unit &&
         (unit.color === Board[i][j].color ||
@@ -688,7 +695,7 @@ const RookGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
   }
   if (j !== 7) {
     for (let r = j + 1; r <= 7; r++) {
-      let unit = Board[r][j];
+      let unit = Board[i][r];
       if (
         unit &&
         (unit.color === Board[i][j].color ||
