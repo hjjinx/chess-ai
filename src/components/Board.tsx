@@ -88,9 +88,14 @@ const Board: React.FC = () => {
       setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
       turn === "W" ? setTurn("B") : setTurn("W");
     } else {
-      setCanMoveToHighlighted((canMoveTo) =>
-        board[i][k].canMoveTo.map((inner: any): boolean[] => inner.slice())
-      );
+      setCanMoveToHighlighted((canMoveTo) => {
+        let newCanMoveTo = board[i][k].canMoveTo.map((inner: any): boolean[] =>
+          inner.slice()
+        );
+        newCanMoveTo[i][k] = true;
+        return newCanMoveTo;
+      });
+
       setPreviousClick([i, k]);
     }
   };
