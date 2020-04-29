@@ -134,21 +134,47 @@ export const Knight = (
     // and 1 in the other axis.
     if (j >= 1) {
       let left = Board[i - 2][j - 1];
-      if (left === null) canMoveTo[i - 2][j - 1] = true;
-      else {
-        if (left.color !== turn) {
-          canMoveTo[i - 2][j - 1] = true;
-          if (left.type === "King") isGivingCheck = true;
+      let thisMoveWillResultInCheck = false;
+
+      if (!left || left.color !== Board[i][j].color) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i - 2][j - 1] = newBoard[i][j];
+        newBoard[i][j] = null;
+        thisMoveWillResultInCheck = isUnderCheck(
+          newBoard,
+          turn === "W" ? "B" : "W"
+        );
+      }
+      if (!thisMoveWillResultInCheck) {
+        if (left === null) canMoveTo[i - 2][j - 1] = true;
+        else {
+          if (left.color !== turn) {
+            canMoveTo[i - 2][j - 1] = true;
+            if (left.type === "King") isGivingCheck = true;
+          }
         }
       }
     }
     if (j <= 6) {
       let right = Board[i - 2][j + 1];
-      if (right === null) canMoveTo[i - 2][j + 1] = true;
-      else {
-        if (right.color !== turn) {
-          canMoveTo[i - 2][j + 1] = true;
-          if (right.type === "King") isGivingCheck = true;
+      let thisMoveWillResultInCheck = false;
+
+      if (!right || right.color !== Board[i][j].color) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i - 2][j + 1] = newBoard[i][j];
+        newBoard[i][j] = null;
+        thisMoveWillResultInCheck = isUnderCheck(
+          newBoard,
+          turn === "W" ? "B" : "W"
+        );
+      }
+      if (!thisMoveWillResultInCheck) {
+        if (right === null) canMoveTo[i - 2][j + 1] = true;
+        else {
+          if (right.color !== turn) {
+            canMoveTo[i - 2][j + 1] = true;
+            if (right.type === "King") isGivingCheck = true;
+          }
         }
       }
     }
@@ -161,21 +187,49 @@ export const Knight = (
     // and 1 in the other axis.
     if (j >= 1) {
       let left = Board[i + 2][j - 1];
-      if (left === null) canMoveTo[i + 2][j - 1] = true;
-      else {
-        if (left.color !== turn) {
-          canMoveTo[i + 2][j - 1] = true;
-          if (left.type === "King") isGivingCheck = true;
+      let thisMoveWillResultInCheck = false;
+
+      if (!left || left.color !== Board[i][j].color) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i + 2][j - 1] = newBoard[i][j];
+        newBoard[i][j] = null;
+        thisMoveWillResultInCheck = isUnderCheck(
+          newBoard,
+          turn === "W" ? "B" : "W"
+        );
+      }
+
+      if (!thisMoveWillResultInCheck) {
+        if (left === null) canMoveTo[i + 2][j - 1] = true;
+        else {
+          if (left.color !== turn) {
+            canMoveTo[i + 2][j - 1] = true;
+            if (left.type === "King") isGivingCheck = true;
+          }
         }
       }
     }
     if (j <= 6) {
       let right = Board[i + 2][j + 1];
-      if (right === null) canMoveTo[i + 2][j + 1] = true;
-      else {
-        if (right.color !== turn) {
-          canMoveTo[i + 2][j + 1] = true;
-          if (right.type === "King") isGivingCheck = true;
+      let thisMoveWillResultInCheck = false;
+
+      if (!right || right.color !== Board[i][j].color) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i + 2][j + 1] = newBoard[i][j];
+        newBoard[i][j] = null;
+        thisMoveWillResultInCheck = isUnderCheck(
+          newBoard,
+          turn === "W" ? "B" : "W"
+        );
+      }
+
+      if (!thisMoveWillResultInCheck) {
+        if (right === null) canMoveTo[i + 2][j + 1] = true;
+        else {
+          if (right.color !== turn) {
+            canMoveTo[i + 2][j + 1] = true;
+            if (right.type === "King") isGivingCheck = true;
+          }
         }
       }
     }
@@ -189,21 +243,48 @@ export const Knight = (
     // and 1 in the other axis.
     if (i >= 1) {
       let left = Board[i - 1][j - 2];
-      if (left === null) canMoveTo[i - 1][j - 2] = true;
-      else {
-        if (left.color !== turn) {
-          canMoveTo[i - 1][j - 2] = true;
-          if (left.type === "King") isGivingCheck = true;
+      let thisMoveWillResultInCheck = false;
+
+      if (!left || left.color !== Board[i][j].color) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i - 1][j - 2] = newBoard[i][j];
+        newBoard[i][j] = null;
+        thisMoveWillResultInCheck = isUnderCheck(
+          newBoard,
+          turn === "W" ? "B" : "W"
+        );
+      }
+      if (!thisMoveWillResultInCheck) {
+        if (left === null) canMoveTo[i - 1][j - 2] = true;
+        else {
+          if (left.color !== turn) {
+            canMoveTo[i - 1][j - 2] = true;
+            if (left.type === "King") isGivingCheck = true;
+          }
         }
       }
     }
     if (i <= 6) {
       let right = Board[i + 1][j - 2];
-      if (right === null) canMoveTo[i + 1][j - 2] = true;
-      else {
-        if (right.color !== turn) {
-          canMoveTo[i + 1][j - 2] = true;
-          if (right.type === "King") isGivingCheck = true;
+      let thisMoveWillResultInCheck = false;
+
+      if (!right || right.color !== Board[i][j].color) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i + 1][j - 2] = newBoard[i][j];
+        newBoard[i][j] = null;
+        thisMoveWillResultInCheck = isUnderCheck(
+          newBoard,
+          turn === "W" ? "B" : "W"
+        );
+      }
+
+      if (!thisMoveWillResultInCheck) {
+        if (right === null) canMoveTo[i + 1][j - 2] = true;
+        else {
+          if (right.color !== turn) {
+            canMoveTo[i + 1][j - 2] = true;
+            if (right.type === "King") isGivingCheck = true;
+          }
         }
       }
     }
@@ -214,21 +295,48 @@ export const Knight = (
     // and 1 in the other axis.
     if (i >= 1) {
       let left = Board[i - 1][j + 2];
-      if (left === null) canMoveTo[i - 1][j + 2] = true;
-      else {
-        if (left.color !== turn) {
-          canMoveTo[i - 1][j + 2] = true;
-          if (left.type === "King") isGivingCheck = true;
+      let thisMoveWillResultInCheck = false;
+
+      if (!left || left.color !== Board[i][j].color) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i - 1][j + 2] = newBoard[i][j];
+        newBoard[i][j] = null;
+        thisMoveWillResultInCheck = isUnderCheck(
+          newBoard,
+          turn === "W" ? "B" : "W"
+        );
+      }
+      if (!thisMoveWillResultInCheck) {
+        if (left === null) canMoveTo[i - 1][j + 2] = true;
+        else {
+          if (left.color !== turn) {
+            canMoveTo[i - 1][j + 2] = true;
+            if (left.type === "King") isGivingCheck = true;
+          }
         }
       }
     }
     if (i <= 6) {
       let right = Board[i + 1][j + 2];
-      if (right === null) canMoveTo[i + 1][j + 2] = true;
-      else {
-        if (right.color !== turn) {
-          canMoveTo[i + 1][j + 2] = true;
-          if (right.type === "King") isGivingCheck = true;
+      let thisMoveWillResultInCheck = false;
+
+      if (!right || right.color !== Board[i][j].color) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i + 1][j + 2] = newBoard[i][j];
+        newBoard[i][j] = null;
+        thisMoveWillResultInCheck = isUnderCheck(
+          newBoard,
+          turn === "W" ? "B" : "W"
+        );
+      }
+
+      if (!thisMoveWillResultInCheck) {
+        if (right === null) canMoveTo[i + 1][j + 2] = true;
+        else {
+          if (right.color !== turn) {
+            canMoveTo[i + 1][j + 2] = true;
+            if (right.type === "King") isGivingCheck = true;
+          }
         }
       }
     }
@@ -651,14 +759,10 @@ const RookGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
         unit &&
         (unit.color === Board[i][j].color ||
           (unit.color !== Board[i][j].color && unit.type !== "King"))
-      ) {
-        // console.log("Breaking..", "r = ", r, "i = ", i, "j = ", j);
+      )
         break;
-      }
-      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
-        // console.log("Check..", "r = ", r, "i = ", i, "j = ", j);
+      if (unit && unit.color !== Board[i][j].color && unit.type === "King")
         return true;
-      }
     }
   }
   if (i !== 7) {
@@ -668,14 +772,10 @@ const RookGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
         unit &&
         (unit.color === Board[i][j].color ||
           (unit.color !== Board[i][j].color && unit.type !== "King"))
-      ) {
-        // console.log("Breaking..", "r = ", r, "i = ", i, "j = ", j);
+      )
         break;
-      }
-      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
-        // console.log("Check..", "r = ", r, "i = ", i, "j = ", j);
+      if (unit && unit.color !== Board[i][j].color && unit.type === "King")
         return true;
-      }
     }
   }
   if (j !== 0) {
@@ -685,14 +785,10 @@ const RookGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
         unit &&
         (unit.color === Board[i][j].color ||
           (unit.color !== Board[i][j].color && unit.type !== "King"))
-      ) {
-        // console.log("Breaking..", "r = ", r, "i = ", i, "j = ", j);
+      )
         break;
-      }
-      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
-        // console.log("Check..", "r = ", r, "i = ", i, "j = ", j);
+      if (unit && unit.color !== Board[i][j].color && unit.type === "King")
         return true;
-      }
     }
   }
   if (j !== 7) {
@@ -702,14 +798,86 @@ const RookGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
         unit &&
         (unit.color === Board[i][j].color ||
           (unit.color !== Board[i][j].color && unit.type !== "King"))
-      ) {
-        // console.log("Breaking..", "r = ", r, "i = ", i, "j = ", j);
+      )
         break;
-      }
-      if (unit && unit.color !== Board[i][j].color && unit.type === "King") {
-        // console.log("Check..", "r = ", r, "i = ", i, "j = ", j);
+      if (unit && unit.color !== Board[i][j].color && unit.type === "King")
         return true;
-      }
+    }
+  }
+  return false;
+};
+
+const KnightGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
+  if (i >= 2) {
+    // i has to be greater than 1 if the knight has to move ahead. because it moves 2 straight
+    // and 1 in the other axis.
+    if (j >= 1) {
+      let left = Board[i - 2][j - 1];
+
+      if (left && left.color !== Board[i][j].color && left.type === "King")
+        return true;
+    }
+    if (j <= 6) {
+      let right = Board[i - 2][j + 1];
+
+      if (right && right.color !== Board[i][j].color && right.type === "King")
+        return true;
+    }
+  }
+  // This covers the 2 cases:
+  // Knight moving 2 straight down and 1 left,
+  // Knight moving 2 straight down and 1 right,
+  if (i <= 5) {
+    // i has to be less than 6 if the knight has to move below. because it moves 2 straight
+    // and 1 in the other axis.
+    if (j >= 1) {
+      let left = Board[i + 2][j - 1];
+
+      if (left && left.color !== Board[i][j].color && left.type === "King")
+        return true;
+    }
+    if (j <= 6) {
+      let right = Board[i + 2][j + 1];
+
+      if (right && right.color !== Board[i][j].color && right.type === "King")
+        return true;
+    }
+  }
+
+  // This covers the 2 cases:
+  // Knight moving 2 left and 1 up,
+  // Knight moving 2 left and 1 down,
+  if (j >= 2) {
+    //i has to be greater than 1 if the knight has to move ahead. because it moves 2 straight
+    // and 1 in the other axis.
+    if (i >= 1) {
+      let left = Board[i - 1][j - 2];
+
+      if (left && left.color !== Board[i][j].color && left.type === "King")
+        return true;
+    }
+    if (i <= 6) {
+      let right = Board[i + 1][j - 2];
+
+      if (right && right.color !== Board[i][j].color && right.type === "King")
+        return true;
+    }
+  }
+
+  if (j <= 5) {
+    //i has to be less than 6 if the knight has to move below. because it moves 2 straight
+    // and 1 in the other axis.
+    if (i >= 1) {
+      let left = Board[i - 1][j + 2];
+
+      if (left && left.color !== Board[i][j].color && left.type === "King")
+        return true;
+    }
+    if (i <= 6) {
+      let right = Board[i + 1][j + 2];
+
+      if (right && right.color !== Board[i][j].color && right.type === "King")
+        return true;
     }
   }
   return false;
@@ -753,15 +921,9 @@ const isUnderCheck = (board: (Piece | any)[][], checkForWhom: String) => {
           case "Rook":
             isGivingCheck = RookGivesCheck(i, j, board);
             break;
-          // case "Knight":
-          //   isGivingCheck = Knight(
-          //     i,
-          //     j,
-          //     board[i][j].canMoveTo,
-          //     board,
-          //     board[i][j].color
-          //   );
-          //   break;
+          case "Knight":
+            isGivingCheck = KnightGivesCheck(i, j, board);
+            break;
         }
         if (isGivingCheck) return true;
       }
