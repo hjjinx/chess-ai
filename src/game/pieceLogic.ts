@@ -480,11 +480,11 @@ export const King = (
   let king = Board[i][j];
   let rook = Board[i][j + 3];
   if (
+    Board[i][j + 3] &&
+    Board[i][j + 3].type === "Rook" &&
     // The king and rook involved in castling must not have previously moved;
     king.numOfMoves === 0 &&
     rook.numOfMoves === 0 &&
-    Board[i][j + 3] &&
-    Board[i][j + 3].type === "Rook" &&
     // There must be no pieces between the king and the rook;
     Board[i][j + 1] === null &&
     Board[i][j + 2] === null
@@ -602,6 +602,7 @@ export const Pawn = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
+  Board[i][j].turnsSinceLastMove++;
   let isGivingCheck: boolean = false;
   if (turn === "W") {
     if (i === 0) {
@@ -661,7 +662,7 @@ export const Pawn = (
         i === 3 &&
         left &&
         left.numOfMoves === 1 &&
-        left.turnsSinceLastMove === 1
+        left.turnsSinceLastMove === 0
       ) {
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i - 1][j - 1] = Board[i][j];
@@ -757,7 +758,7 @@ export const Pawn = (
         i === 4 &&
         left &&
         left.numOfMoves === 1 &&
-        left.turnsSinceLastMove === 1
+        left.turnsSinceLastMove === 0
       ) {
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i + 1][j - 1] = newBoard[i][j];
