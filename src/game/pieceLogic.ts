@@ -603,7 +603,6 @@ export const Pawn = (
   turn: String
 ) => {
   let isGivingCheck: boolean = false;
-  Board[i][j].turnsSinceLastMove++;
   if (turn === "W") {
     if (i === 0) {
       // pawn promotion
@@ -630,9 +629,18 @@ export const Pawn = (
     }
     // if turn is white, pawns move up.
     if (Board[i - 1][j] === null) {
-      canMoveTo[i - 1][j] = true; //Highlighting the box below the pawn.
-      if (Board[i][j].numOfMoves === 0 && Board[i - 2][j] === null)
-        canMoveTo[i - 2][j] = true;
+      let newBoard = Board.map((inner) => inner.slice());
+      newBoard[i - 1][j] = Board[i][j];
+      newBoard[i][j] = null;
+      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+        canMoveTo[i - 1][j] = true; //Highlighting the box below the pawn.
+      if (Board[i][j].numOfMoves === 0 && Board[i - 2][j] === null) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i - 2][j] = Board[i][j];
+        newBoard[i][j] = null;
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+          canMoveTo[i - 2][j] = true;
+      }
     }
 
     if (j !== 0) {
@@ -640,32 +648,54 @@ export const Pawn = (
       const left = Board[i][j - 1];
       if (upLeft !== null) {
         if (upLeft.color === "B") {
-          if (upLeft.type == "King") isGivingCheck = true;
-          canMoveTo[i - 1][j - 1] = true;
+          let newBoard = Board.map((inner) => inner.slice());
+          newBoard[i - 1][j - 1] = Board[i][j];
+          newBoard[i][j] = null;
+          if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
+            if (upLeft.type == "King") isGivingCheck = true;
+            canMoveTo[i - 1][j - 1] = true;
+          }
         }
       } else if (
+        // En Passant
         i === 3 &&
         left &&
         left.numOfMoves === 1 &&
         left.turnsSinceLastMove === 1
-      )
-        canMoveTo[i - 1][j - 1] = true;
+      ) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i - 1][j - 1] = Board[i][j];
+        newBoard[i][j - 1] = null;
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+          canMoveTo[i - 1][j - 1] = true;
+      }
     }
     if (j !== 7) {
       const upRight = Board[i - 1][j + 1];
       const right = Board[i][j + 1];
       if (upRight !== null) {
         if (upRight.color === "B") {
-          if (upRight.type == "King") isGivingCheck = true;
-          canMoveTo[i - 1][j + 1] = true;
+          let newBoard = Board.map((inner) => inner.slice());
+          newBoard[i - 1][j + 1] = Board[i][j];
+          newBoard[i][j] = null;
+          if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
+            if (upRight.type == "King") isGivingCheck = true;
+            canMoveTo[i - 1][j + 1] = true;
+          }
         }
       } else if (
+        //  En Passant
         i === 3 &&
         right &&
         right.numOfMoves === 1 &&
         right.turnsSinceLastMove === 0
-      )
-        canMoveTo[i - 1][j + 1] = true;
+      ) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i - 1][j + 1] = Board[i][j];
+        newBoard[i][j + 1] = null;
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+          canMoveTo[i - 1][j + 1] = true;
+      }
     }
   }
 
@@ -695,9 +725,18 @@ export const Pawn = (
     }
     // if turn is black, pawns move below.
     if (Board[i + 1][j] === null) {
-      canMoveTo[i + 1][j] = true; //Highlighting the box above the pawn.
-      if (Board[i][j].numOfMoves === 0 && Board[i + 2][j] === null)
-        canMoveTo[i + 2][j] = true;
+      let newBoard = Board.map((inner) => inner.slice());
+      newBoard[i + 1][j] = Board[i][j];
+      newBoard[i][j] = null;
+      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+        canMoveTo[i + 1][j] = true; //Highlighting the box above the pawn.
+      if (Board[i][j].numOfMoves === 0 && Board[i + 2][j] === null) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i + 2][j] = Board[i][j];
+        newBoard[i][j] = null;
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+          canMoveTo[i + 2][j] = true;
+      }
     }
 
     if (j !== 0) {
@@ -705,32 +744,54 @@ export const Pawn = (
       const left = Board[i][j - 1];
       if (upLeft !== null) {
         if (upLeft.color === "W") {
-          if (upLeft.type === "King") isGivingCheck = true;
-          canMoveTo[i + 1][j - 1] = true;
+          let newBoard = Board.map((inner) => inner.slice());
+          newBoard[i + 1][j - 1] = Board[i][j];
+          newBoard[i][j] = null;
+          if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
+            if (upLeft.type === "King") isGivingCheck = true;
+            canMoveTo[i + 1][j - 1] = true;
+          }
         }
       } else if (
+        // EN Passant
         i === 4 &&
         left &&
         left.numOfMoves === 1 &&
         left.turnsSinceLastMove === 1
-      )
-        canMoveTo[i + 1][j - 1] = true;
+      ) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i + 1][j - 1] = newBoard[i][j];
+        newBoard[i][j - 1] = null;
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+          canMoveTo[i + 1][j - 1] = true;
+      }
     }
     if (j !== 7) {
       const upRight = Board[i + 1][j + 1];
       const right = Board[i][j + 1];
       if (upRight !== null) {
         if (upRight.color === "W") {
-          if (upRight.type == "King") isGivingCheck = true;
-          canMoveTo[i + 1][j + 1] = true;
+          let newBoard = Board.map((inner) => inner.slice());
+          newBoard[i + 1][j + 1] = Board[i][j];
+          newBoard[i][j] = null;
+          if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
+            if (upRight.type == "King") isGivingCheck = true;
+            canMoveTo[i + 1][j + 1] = true;
+          }
         }
       } else if (
+        // En Passant
         i === 4 &&
         right &&
         right.numOfMoves === 1 &&
         right.turnsSinceLastMove === 0
-      )
-        canMoveTo[i + 1][j + 1] = true;
+      ) {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i + 1][j + 1] = newBoard[i][j];
+        newBoard[i][j + 1] = null;
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+          canMoveTo[i + 1][j + 1] = true;
+      }
     }
   }
   return isGivingCheck;
@@ -819,17 +880,16 @@ export const pieceStateUpdate = (board: (Piece | any)[][], turn: string) => {
 };
 
 const PawnGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
-  let isGivingCheck: boolean = false;
   if (Board[i][j].color === "W") {
     if (j !== 0) {
       const upLeft = Board[i - 1][j - 1];
       if (upLeft !== null && upLeft.color === "B" && upLeft.type == "King")
-        isGivingCheck = true;
+        return true;
     }
     if (j !== 7) {
       const upRight = Board[i - 1][j + 1];
       if (upRight !== null && upRight.color === "B" && upRight.type == "King")
-        isGivingCheck = true;
+        return true;
     }
   }
 
@@ -837,15 +897,15 @@ const PawnGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
     if (j !== 0) {
       const upLeft = Board[i + 1][j - 1];
       if (upLeft !== null && upLeft.color === "W" && upLeft.type === "King")
-        isGivingCheck = true;
+        return true;
     }
     if (j !== 7) {
       const upRight = Board[i + 1][j + 1];
       if (upRight !== null && upRight.color === "W" && upRight.type == "King")
-        isGivingCheck = true;
+        return true;
     }
   }
-  return isGivingCheck;
+  return false;
 };
 
 const RookGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
@@ -1102,9 +1162,9 @@ const isUnderCheck = (board: (Piece | any)[][], checkForWhom: String) => {
       if (board[i][j] && board[i][j].color === checkForWhom) {
         let isGivingCheck: boolean | undefined = false;
         switch (board[i][j].type) {
-          // case "Pawn":
-          //   isGivingCheck = PawnGivesCheck(i, j, board);
-          //   break;
+          case "Pawn":
+            isGivingCheck = PawnGivesCheck(i, j, board);
+            break;
           case "Bishop":
             isGivingCheck = BishopGivesCheck(i, j, board);
             break;
