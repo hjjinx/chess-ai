@@ -22,8 +22,6 @@ export const Rook = (
     let newBoard = Board.map((inner) => inner.slice());
     newBoard[i][r] = newBoard[i][j];
     newBoard[i][j] = null;
-    console.log(r, i, j);
-    console.log(newBoard);
     return isUnderCheck(newBoard, turn === "W" ? "B" : "W");
   };
   const doesThisVerticalMoveResultInCheck = (r: number, j: number) => {
@@ -351,65 +349,122 @@ export const Bishop = (
   turn: String
 ) => {
   let isGivingCheck = false;
+
   //bishop can move in 4 directions.
   for (let r = 1; r < 8; r++) {
     // up-right.
+
+    const isUnderCheckIfThisMoveHappens = (r: number) => {
+      let newBoard = Board.map((inner) => inner.slice());
+      newBoard[i - r][j + r] = newBoard[i][j];
+      newBoard[i][j] = null;
+      return isUnderCheck(newBoard, turn === "W" ? "B" : "W");
+    };
+
     if (i - r >= 0 && j + r <= 7) {
       const piece = Board[i - r][j + r];
+
+      if (piece) {
+        if (piece.color === Board[i][j].color) break;
+        else if (isUnderCheckIfThisMoveHappens(r)) break;
+      } else if (isUnderCheckIfThisMoveHappens(r)) continue;
+
       if (piece === null) canMoveTo[i - r][j + r] = true;
       else {
         if (piece.color !== turn) {
           if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i - r][j + r] = true;
-          break;
-        } else break;
+        }
+        break;
       }
-    }
+    } else break;
   }
 
   for (let r = 1; r < 8; r++) {
     // down-right.
+
+    const isUnderCheckIfThisMoveHappens = (r: number) => {
+      let newBoard = Board.map((inner) => inner.slice());
+      newBoard[i + r][j + r] = newBoard[i][j];
+      newBoard[i][j] = null;
+      return isUnderCheck(newBoard, turn === "W" ? "B" : "W");
+    };
+
     if (i + r <= 7 && j + r <= 7) {
       let piece = Board[i + r][j + r];
+
+      if (piece) {
+        if (piece.color === Board[i][j].color) break;
+        else if (isUnderCheckIfThisMoveHappens(r)) break;
+      } else if (isUnderCheckIfThisMoveHappens(r)) continue;
+
       if (piece === null) canMoveTo[i + r][j + r] = true;
       else {
         if (piece.color !== turn) {
           if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i + r][j + r] = true;
-          break;
-        } else break;
+        }
+        break;
       }
-    }
+    } else break;
   }
 
   for (let r = 1; r < 8; r++) {
     // left bottom.
+
+    const isUnderCheckIfThisMoveHappens = (r: number) => {
+      let newBoard = Board.map((inner) => inner.slice());
+      newBoard[i + r][j - r] = newBoard[i][j];
+      newBoard[i][j] = null;
+      return isUnderCheck(newBoard, turn === "W" ? "B" : "W");
+    };
+
     if (i + r <= 7 && j - r >= 0) {
       let piece = Board[i + r][j - r];
+
+      if (piece) {
+        if (piece.color === Board[i][j].color) break;
+        else if (isUnderCheckIfThisMoveHappens(r)) break;
+      } else if (isUnderCheckIfThisMoveHappens(r)) continue;
+
       if (piece === null) canMoveTo[i + r][j - r] = true;
       else {
         if (piece.color !== turn) {
           if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i + r][j - r] = true;
-          break;
-        } else break;
+        }
+        break;
       }
     }
   }
 
   for (let r = 1; r < 8; r++) {
     // left top.
+
     if (i - r >= 0 && j - r >= 0) {
       let piece = Board[i - r][j - r];
+
+      const isUnderCheckIfThisMoveHappens = (r: number) => {
+        let newBoard = Board.map((inner) => inner.slice());
+        newBoard[i - r][j - r] = newBoard[i][j];
+        newBoard[i][j] = null;
+        return isUnderCheck(newBoard, turn === "W" ? "B" : "W");
+      };
+
+      if (piece) {
+        if (piece.color === Board[i][j].color) break;
+        else if (isUnderCheckIfThisMoveHappens(r)) break;
+      } else if (isUnderCheckIfThisMoveHappens(r)) continue;
+
       if (piece === null) canMoveTo[i - r][j - r] = true;
       else {
         if (piece.color !== turn) {
           if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i - r][j - r] = true;
-          break;
-        } else break;
+        }
+        break;
       }
-    }
+    } else break;
   }
 
   return isGivingCheck;
@@ -437,16 +492,12 @@ export const King = (
       // attack by an enemy piece;
       // checking whether the king would be under check if castling did happen:
       const board = Board.map((inner) => inner.slice());
-      console.log("OLD:");
-      console.log(Board);
       board[i][j + 1] = Object.assign({}, Board[i][j + 3]);
       board[i][j + 2] = Object.assign({}, Board[i][j]);
       board[i][j] = null;
       board[i][j + 3] = null;
       if (!isUnderCheck(board, turn === "W" ? "B" : "W"))
         canMoveTo[i][j + 2] = true;
-      console.log("NEW:");
-      console.log(Board);
     }
   }
 
@@ -883,26 +934,84 @@ const KnightGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
   return false;
 };
 
+const BishopGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
+  //bishop can move in 4 directions.
+  for (let r = 1; r < 8; r++) {
+    // up-right.
+    if (i - r >= 0 && j + r <= 7) {
+      const piece = Board[i - r][j + r];
+      if (
+        piece &&
+        (piece.color === Board[i][j].color ||
+          (piece.color !== Board[i][j].color && piece.type !== "King"))
+      )
+        break;
+      if (piece && piece.color !== Board[i][j].color && piece.type === "King")
+        return true;
+    } else break;
+  }
+
+  for (let r = 1; r < 8; r++) {
+    // down-right.
+    if (i + r <= 7 && j + r <= 7) {
+      let piece = Board[i + r][j + r];
+      if (
+        piece &&
+        (piece.color === Board[i][j].color ||
+          (piece.color !== Board[i][j].color && piece.type !== "King"))
+      )
+        break;
+      if (piece && piece.color !== Board[i][j].color && piece.type === "King")
+        return true;
+    } else break;
+  }
+
+  for (let r = 1; r < 8; r++) {
+    // left bottom.
+    if (i + r <= 7 && j - r >= 0) {
+      let piece = Board[i + r][j - r];
+      if (
+        piece &&
+        (piece.color === Board[i][j].color ||
+          (piece.color !== Board[i][j].color && piece.type !== "King"))
+      )
+        break;
+      if (piece && piece.color !== Board[i][j].color && piece.type === "King")
+        return true;
+    }
+  }
+
+  for (let r = 1; r < 8; r++) {
+    // left top.
+    if (i - r >= 0 && j - r >= 0) {
+      let piece = Board[i - r][j - r];
+      if (
+        piece &&
+        (piece.color === Board[i][j].color ||
+          (piece.color !== Board[i][j].color && piece.type !== "King"))
+      )
+        break;
+      if (piece && piece.color !== Board[i][j].color && piece.type === "King")
+        return true;
+    } else break;
+  }
+
+  return false;
+};
+
 // checkForWhom will be opposite color of the piece that called this function.
 const isUnderCheck = (board: (Piece | any)[][], checkForWhom: String) => {
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       if (board[i][j] && board[i][j].color === checkForWhom) {
-        // console.log(board[i][j].type, i, j);
         let isGivingCheck: boolean | undefined = false;
         switch (board[i][j].type) {
           // case "Pawn":
           //   isGivingCheck = PawnGivesCheck(i, j, board);
           //   break;
-          // case "Bishop":
-          //   isGivingCheck = Bishop(
-          //     i,
-          //     j,
-          //     board[i][j].canMoveTo,
-          //     board,
-          //     board[i][j].color
-          //   );
-          //   break;
+          case "Bishop":
+            isGivingCheck = BishopGivesCheck(i, j, board);
+            break;
           // case "King":
           //   King(i, j, board[i][j].canMoveTo, board, board[i][j].color);
           //   break;
