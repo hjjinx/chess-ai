@@ -605,29 +605,6 @@ export const Pawn = (
   Board[i][j].turnsSinceLastMove++;
   let isGivingCheck: boolean = false;
   if (turn === "W") {
-    if (i === 0) {
-      // pawn promotion
-      const pieceRef = Board[i][j];
-      pieceRef.type = "Queen";
-      isGivingCheck = Bishop(
-        i,
-        j,
-        Board[i][j].canMoveTo,
-        Board,
-        Board[i][j].color
-      );
-      if (isGivingCheck)
-        Rook(i, j, Board[i][j].canMoveTo, Board, Board[i][j].color);
-      else
-        isGivingCheck = Rook(
-          i,
-          j,
-          Board[i][j].canMoveTo,
-          Board,
-          Board[i][j].color
-        );
-      return;
-    }
     // if turn is white, pawns move up.
     if (Board[i - 1][j] === null) {
       let newBoard = Board.map((inner) => inner.slice());
@@ -701,29 +678,6 @@ export const Pawn = (
   }
 
   if (turn === "B") {
-    if (i === 7) {
-      // pawn promotion
-      const pieceRef = Board[i][j];
-      pieceRef.type = "Queen";
-      isGivingCheck = Bishop(
-        i,
-        j,
-        Board[i][j].canMoveTo,
-        Board,
-        Board[i][j].color
-      );
-      if (isGivingCheck)
-        Rook(i, j, Board[i][j].canMoveTo, Board, Board[i][j].color);
-      else
-        isGivingCheck = Rook(
-          i,
-          j,
-          Board[i][j].canMoveTo,
-          Board,
-          Board[i][j].color
-        );
-      return;
-    }
     // if turn is black, pawns move below.
     if (Board[i + 1][j] === null) {
       let newBoard = Board.map((inner) => inner.slice());

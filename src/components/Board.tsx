@@ -27,7 +27,6 @@ const Board: React.FC = () => {
     setIsCheck(false);
     // Create a copy of the previous board
     let newBoard = previousBoard.map((inner) => inner.slice());
-    newBoard[previousClick[0]][previousClick[1]] = null;
     if (newBoard[i][k] && newBoard[i][k].type === "King") {
       // Game over here
       alert("Game over");
@@ -59,7 +58,21 @@ const Board: React.FC = () => {
     )
       newBoard[i === 2 ? 3 : 4][k] = null;
 
+    // Pawn Promotion
+    if (
+      (i === 0 &&
+        previousBoard[1][k] &&
+        previousBoard[1][k].color === "W" &&
+        previousBoard[1][k].type === "Pawn") ||
+      (i === 7 &&
+        previousBoard[6][k] &&
+        previousBoard[6][k].color === "B" &&
+        previousBoard[6][k].type === "Pawn")
+    )
+      previousBoard[i === 0 ? 1 : 6][k].type = "Queen";
+
     newBoard[i][k] = previousBoard[previousClick[0]][previousClick[1]];
+    newBoard[previousClick[0]][previousClick[1]] = null;
     newBoard[i][k].numOfMoves++;
     newBoard[i][k].turnsSinceLastMove = 0;
 
