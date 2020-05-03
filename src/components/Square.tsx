@@ -34,10 +34,7 @@ const Square: React.FC<Props> = (props) => {
         boxShadow: `0 0 40px 1px ${
           props.active ? (props.piece ? "red" : "yellow") : "transparent"
         } inset`,
-        color: color,
-        // border: `${props.active ? "3px" : "1px"} solid ${
-        //   props.active ? "yellow" : "black"
-        // }`,
+        color,
         border: `1px solid black  `,
         boxSizing: "border-box",
       }}

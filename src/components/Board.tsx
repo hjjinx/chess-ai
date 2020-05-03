@@ -77,8 +77,7 @@ const Board: React.FC = () => {
     newBoard[i][k].turnsSinceLastMove = 0;
 
     // (piecesGivingCheck = [[i, k,], [i, k]]) piece locations that can directly kill the King in the next turn
-    const piecesGivingCheck = pieceStateUpdate(newBoard, turn);
-    if (piecesGivingCheck.length > 0) setIsCheck(true);
+    pieceStateUpdate(newBoard, turn);
 
     return newBoard;
   };

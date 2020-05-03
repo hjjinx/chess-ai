@@ -2,10 +2,11 @@ import { Piece } from "./Piece";
 import { initiallyCanMoveTo } from "./InitialPosition";
 
 // TODO:
-// en passant
 // Stalemate
 
 // Done:
+// Ban illegal moves
+// en passant
 // Castling
 // Pawn promotion
 
@@ -33,7 +34,6 @@ export const Rook = (
     return isUnderCheck(newBoard, turn === "W" ? "B" : "W");
   };
 
-  let isGivingCheck: boolean = false;
   if (i !== 0) {
     for (let r = i - 1; r >= 0; r--) {
       //For boxes above the rook.
@@ -47,7 +47,6 @@ export const Rook = (
       if (piece === null) canMoveTo[r][j] = true;
       else {
         if (piece.color !== turn) {
-          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[r][j] = true;
         }
         break;
@@ -67,7 +66,6 @@ export const Rook = (
       if (piece === null) canMoveTo[r][j] = true;
       else {
         if (piece.color !== turn) {
-          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[r][j] = true;
         }
         break;
@@ -87,7 +85,6 @@ export const Rook = (
       if (piece === null) canMoveTo[i][r] = true;
       else {
         if (piece.color !== turn) {
-          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i][r] = true;
         }
         break;
@@ -107,14 +104,12 @@ export const Rook = (
       if (piece === null) canMoveTo[i][r] = true;
       else {
         if (piece.color !== turn) {
-          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i][r] = true;
           break;
         } else break;
       }
     }
   }
-  return isGivingCheck;
 };
 export const Knight = (
   i: number,
@@ -123,7 +118,6 @@ export const Knight = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
-  let isGivingCheck: boolean = false;
   // This covers the 2 cases:
   // Knight moving 2 straight up and 1 left,
   // Knight moving 2 straight up and 1 right,
@@ -148,7 +142,6 @@ export const Knight = (
         else {
           if (left.color !== turn) {
             canMoveTo[i - 2][j - 1] = true;
-            if (left.type === "King") isGivingCheck = true;
           }
         }
       }
@@ -171,7 +164,6 @@ export const Knight = (
         else {
           if (right.color !== turn) {
             canMoveTo[i - 2][j + 1] = true;
-            if (right.type === "King") isGivingCheck = true;
           }
         }
       }
@@ -202,7 +194,6 @@ export const Knight = (
         else {
           if (left.color !== turn) {
             canMoveTo[i + 2][j - 1] = true;
-            if (left.type === "King") isGivingCheck = true;
           }
         }
       }
@@ -226,7 +217,6 @@ export const Knight = (
         else {
           if (right.color !== turn) {
             canMoveTo[i + 2][j + 1] = true;
-            if (right.type === "King") isGivingCheck = true;
           }
         }
       }
@@ -257,7 +247,6 @@ export const Knight = (
         else {
           if (left.color !== turn) {
             canMoveTo[i - 1][j - 2] = true;
-            if (left.type === "King") isGivingCheck = true;
           }
         }
       }
@@ -281,7 +270,6 @@ export const Knight = (
         else {
           if (right.color !== turn) {
             canMoveTo[i + 1][j - 2] = true;
-            if (right.type === "King") isGivingCheck = true;
           }
         }
       }
@@ -309,7 +297,6 @@ export const Knight = (
         else {
           if (left.color !== turn) {
             canMoveTo[i - 1][j + 2] = true;
-            if (left.type === "King") isGivingCheck = true;
           }
         }
       }
@@ -333,13 +320,11 @@ export const Knight = (
         else {
           if (right.color !== turn) {
             canMoveTo[i + 1][j + 2] = true;
-            if (right.type === "King") isGivingCheck = true;
           }
         }
       }
     }
   }
-  return isGivingCheck;
 };
 export const Bishop = (
   i: number,
@@ -348,8 +333,6 @@ export const Bishop = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
-  let isGivingCheck = false;
-
   //bishop can move in 4 directions.
   for (let r = 1; r < 8; r++) {
     // up-right.
@@ -372,7 +355,6 @@ export const Bishop = (
       if (piece === null) canMoveTo[i - r][j + r] = true;
       else {
         if (piece.color !== turn) {
-          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i - r][j + r] = true;
         }
         break;
@@ -401,7 +383,6 @@ export const Bishop = (
       if (piece === null) canMoveTo[i + r][j + r] = true;
       else {
         if (piece.color !== turn) {
-          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i + r][j + r] = true;
         }
         break;
@@ -430,7 +411,6 @@ export const Bishop = (
       if (piece === null) canMoveTo[i + r][j - r] = true;
       else {
         if (piece.color !== turn) {
-          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i + r][j - r] = true;
         }
         break;
@@ -459,15 +439,12 @@ export const Bishop = (
       if (piece === null) canMoveTo[i - r][j - r] = true;
       else {
         if (piece.color !== turn) {
-          if (piece.type === "King") isGivingCheck = true;
           canMoveTo[i - r][j - r] = true;
         }
         break;
       }
     } else break;
   }
-
-  return isGivingCheck;
 };
 export const King = (
   i: number,
@@ -603,7 +580,6 @@ export const Pawn = (
   turn: String
 ) => {
   Board[i][j].turnsSinceLastMove++;
-  let isGivingCheck: boolean = false;
   if (turn === "W") {
     // if turn is white, pawns move up.
     if (Board[i - 1][j] === null) {
@@ -630,7 +606,6 @@ export const Pawn = (
           newBoard[i - 1][j - 1] = Board[i][j];
           newBoard[i][j] = null;
           if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
-            if (upLeft.type == "King") isGivingCheck = true;
             canMoveTo[i - 1][j - 1] = true;
           }
         }
@@ -657,7 +632,6 @@ export const Pawn = (
           newBoard[i - 1][j + 1] = Board[i][j];
           newBoard[i][j] = null;
           if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
-            if (upRight.type == "King") isGivingCheck = true;
             canMoveTo[i - 1][j + 1] = true;
           }
         }
@@ -703,7 +677,6 @@ export const Pawn = (
           newBoard[i + 1][j - 1] = Board[i][j];
           newBoard[i][j] = null;
           if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
-            if (upLeft.type === "King") isGivingCheck = true;
             canMoveTo[i + 1][j - 1] = true;
           }
         }
@@ -730,7 +703,6 @@ export const Pawn = (
           newBoard[i + 1][j + 1] = Board[i][j];
           newBoard[i][j] = null;
           if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
-            if (upRight.type == "King") isGivingCheck = true;
             canMoveTo[i + 1][j + 1] = true;
           }
         }
@@ -749,83 +721,35 @@ export const Pawn = (
       }
     }
   }
-  return isGivingCheck;
 };
 
 export const pieceStateUpdate = (board: (Piece | any)[][], turn: string) => {
   let piecesGivingCheck: number[][] = [];
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
-      let isGivingCheck: boolean | undefined = false;
       if (board[i][j] && board[i][j].color !== turn) {
         board[i][j].canMoveTo = initiallyCanMoveTo.map((inner) =>
           inner.slice()
         );
         switch (board[i][j].type) {
           case "Pawn":
-            isGivingCheck = Pawn(
-              i,
-              j,
-              board[i][j].canMoveTo,
-              board,
-              board[i][j].color
-            );
-            if (isGivingCheck) piecesGivingCheck.push([i, j]);
+            Pawn(i, j, board[i][j].canMoveTo, board, board[i][j].color);
             break;
           case "Bishop":
-            isGivingCheck = Bishop(
-              i,
-              j,
-              board[i][j].canMoveTo,
-              board,
-              board[i][j].color
-            );
-            if (isGivingCheck) piecesGivingCheck.push([i, j]);
+            Bishop(i, j, board[i][j].canMoveTo, board, board[i][j].color);
             break;
           case "King":
             King(i, j, board[i][j].canMoveTo, board, board[i][j].color);
             break;
           case "Queen":
-            isGivingCheck = Bishop(
-              i,
-              j,
-              board[i][j].canMoveTo,
-              board,
-              board[i][j].color
-            );
-            if (isGivingCheck) {
-              piecesGivingCheck.push([i, j]);
-              Rook(i, j, board[i][j].canMoveTo, board, board[i][j].color);
-            } else {
-              isGivingCheck = Rook(
-                i,
-                j,
-                board[i][j].canMoveTo,
-                board,
-                board[i][j].color
-              );
-              if (isGivingCheck) piecesGivingCheck.push([i, j]);
-            }
+            Bishop(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            Rook(i, j, board[i][j].canMoveTo, board, board[i][j].color);
             break;
           case "Rook":
-            isGivingCheck = Rook(
-              i,
-              j,
-              board[i][j].canMoveTo,
-              board,
-              board[i][j].color
-            );
-            if (isGivingCheck) piecesGivingCheck.push([i, j]);
+            Rook(i, j, board[i][j].canMoveTo, board, board[i][j].color);
             break;
           case "Knight":
-            isGivingCheck = Knight(
-              i,
-              j,
-              board[i][j].canMoveTo,
-              board,
-              board[i][j].color
-            );
-            if (isGivingCheck) piecesGivingCheck.push([i, j]);
+            Knight(i, j, board[i][j].canMoveTo, board, board[i][j].color);
             break;
         }
       }
