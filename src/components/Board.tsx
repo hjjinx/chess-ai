@@ -10,7 +10,6 @@ const Board: React.FC = () => {
   const [board, setBoard] = useState(() => initialBoard);
   const [previousClick, setPreviousClick] = useState([4, 4]);
   const [turn, setTurn] = useState("W");
-  const [isCheck, setIsCheck] = useState(false);
   const [canMoveToHighlighted, setCanMoveToHighlighted] = useState(() => [
     ...initiallyCanMoveTo,
   ]);
@@ -24,7 +23,6 @@ const Board: React.FC = () => {
     i: number,
     k: number
   ) => {
-    setIsCheck(false);
     // Create a copy of the previous board
     let newBoard = previousBoard.map((inner) => inner.slice());
     if (newBoard[i][k] && newBoard[i][k].type === "King") {
@@ -114,7 +112,6 @@ const Board: React.FC = () => {
 
   return (
     <div>
-      Is Under Check: {JSON.stringify(isCheck)}
       <section className="app_board" style={{ margin: "auto" }}>
         {board.map((rows: Piece[][] | any, i: number) => {
           return rows.map((col: Piece[], k: number) => {
