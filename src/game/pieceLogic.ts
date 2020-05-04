@@ -10,6 +10,25 @@ import { initiallyCanMoveTo } from "./InitialPosition";
 // Castling
 // Pawn promotion
 
+const valueOfPiece = (
+  type: "King" | "Rook" | "Knight" | "Bishop" | "Pawn" | "Queen"
+) => {
+  switch (type) {
+    case "King":
+      return 5000;
+    case "Rook":
+      return 100;
+    case "Knight":
+      return 150;
+    case "Bishop":
+      return 100;
+    case "Pawn":
+      return 30;
+    case "Queen":
+      return 500;
+  }
+};
+
 export const Rook = (
   i: number,
   j: number,
@@ -17,6 +36,7 @@ export const Rook = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
+  let importance = 150;
   const doesThisHorizontalMoveResultInCheck = (i: number, r: number) => {
     // If the new state of the board after the move happens results in the player being under check,
     // then that move will not be possible.
@@ -48,6 +68,7 @@ export const Rook = (
       else {
         if (piece.color !== turn) {
           canMoveTo[r][j] = true;
+          importance += valueOfPiece(piece.type);
         }
         break;
       }
@@ -67,6 +88,7 @@ export const Rook = (
       else {
         if (piece.color !== turn) {
           canMoveTo[r][j] = true;
+          importance += valueOfPiece(piece.type);
         }
         break;
       }
@@ -86,6 +108,7 @@ export const Rook = (
       else {
         if (piece.color !== turn) {
           canMoveTo[i][r] = true;
+          importance += valueOfPiece(piece.type);
         }
         break;
       }
@@ -105,11 +128,14 @@ export const Rook = (
       else {
         if (piece.color !== turn) {
           canMoveTo[i][r] = true;
-          break;
-        } else break;
+          importance += valueOfPiece(piece.type);
+        }
+        break;
       }
     }
   }
+  importance *= turn === "W" ? 1 : -1;
+  Board[i][j].importance = importance;
 };
 export const Knight = (
   i: number,
@@ -118,6 +144,7 @@ export const Knight = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
+  let importance = 200;
   // This covers the 2 cases:
   // Knight moving 2 straight up and 1 left,
   // Knight moving 2 straight up and 1 right,
@@ -142,6 +169,7 @@ export const Knight = (
         else {
           if (left.color !== turn) {
             canMoveTo[i - 2][j - 1] = true;
+            importance += valueOfPiece(left.type);
           }
         }
       }
@@ -164,6 +192,7 @@ export const Knight = (
         else {
           if (right.color !== turn) {
             canMoveTo[i - 2][j + 1] = true;
+            importance += valueOfPiece(right.type);
           }
         }
       }
@@ -194,6 +223,7 @@ export const Knight = (
         else {
           if (left.color !== turn) {
             canMoveTo[i + 2][j - 1] = true;
+            importance += valueOfPiece(left.type);
           }
         }
       }
@@ -217,6 +247,7 @@ export const Knight = (
         else {
           if (right.color !== turn) {
             canMoveTo[i + 2][j + 1] = true;
+            importance += valueOfPiece(right.type);
           }
         }
       }
@@ -247,6 +278,7 @@ export const Knight = (
         else {
           if (left.color !== turn) {
             canMoveTo[i - 1][j - 2] = true;
+            importance += valueOfPiece(left.type);
           }
         }
       }
@@ -270,6 +302,7 @@ export const Knight = (
         else {
           if (right.color !== turn) {
             canMoveTo[i + 1][j - 2] = true;
+            importance += valueOfPiece(right.type);
           }
         }
       }
@@ -297,6 +330,7 @@ export const Knight = (
         else {
           if (left.color !== turn) {
             canMoveTo[i - 1][j + 2] = true;
+            importance += valueOfPiece(left.type);
           }
         }
       }
@@ -320,11 +354,15 @@ export const Knight = (
         else {
           if (right.color !== turn) {
             canMoveTo[i + 1][j + 2] = true;
+            importance += valueOfPiece(right.type);
           }
         }
       }
     }
   }
+  importance *= turn === "W" ? 1 : -1;
+  console.log("importance in Knight func: " + importance);
+  Board[i][j].importance = importance;
 };
 export const Bishop = (
   i: number,
@@ -333,6 +371,7 @@ export const Bishop = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
+  let importance: number = 150;
   //bishop can move in 4 directions.
   for (let r = 1; r < 8; r++) {
     // up-right.
@@ -356,6 +395,7 @@ export const Bishop = (
       else {
         if (piece.color !== turn) {
           canMoveTo[i - r][j + r] = true;
+          importance += valueOfPiece(piece.type);
         }
         break;
       }
@@ -384,6 +424,7 @@ export const Bishop = (
       else {
         if (piece.color !== turn) {
           canMoveTo[i + r][j + r] = true;
+          importance += valueOfPiece(piece.type);
         }
         break;
       }
@@ -412,6 +453,7 @@ export const Bishop = (
       else {
         if (piece.color !== turn) {
           canMoveTo[i + r][j - r] = true;
+          importance += valueOfPiece(piece.type);
         }
         break;
       }
@@ -440,11 +482,15 @@ export const Bishop = (
       else {
         if (piece.color !== turn) {
           canMoveTo[i - r][j - r] = true;
+          importance += valueOfPiece(piece.type);
         }
         break;
       }
     } else break;
   }
+  importance *= turn === "W" ? 1 : -1;
+  console.log("importance in Knight func: " + importance);
+  Board[i][j].importance = importance;
 };
 export const King = (
   i: number,
@@ -453,6 +499,7 @@ export const King = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
+  let importance: number = 10000;
   // Castling:
   let king = Board[i][j];
   let rook = Board[i][j + 3];
@@ -485,8 +532,10 @@ export const King = (
       let newBoard = Board.map((inner) => inner.slice());
       newBoard[i - 1][j] = Board[i][j];
       newBoard[i][j] = null;
-      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
         canMoveTo[i - 1][j] = true;
+        if (piece) importance += valueOfPiece(piece.type);
+      }
     }
     if (j >= 1) {
       const piece = Board[i - 1][j - 1];
@@ -495,8 +544,10 @@ export const King = (
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i - 1][j - 1] = Board[i][j];
         newBoard[i][j] = null;
-        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
           canMoveTo[i - 1][j - 1] = true;
+          if (piece) importance += valueOfPiece(piece.type);
+        }
       }
     }
     if (j <= 6) {
@@ -506,8 +557,10 @@ export const King = (
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i - 1][j + 1] = Board[i][j];
         newBoard[i][j] = null;
-        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
           canMoveTo[i - 1][j + 1] = true;
+          if (piece) importance += valueOfPiece(piece.type);
+        }
       }
     }
   }
@@ -519,8 +572,10 @@ export const King = (
       let newBoard = Board.map((inner) => inner.slice());
       newBoard[i + 1][j] = Board[i][j];
       newBoard[i][j] = null;
-      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
         canMoveTo[i + 1][j] = true;
+        if (piece) importance += valueOfPiece(piece.type);
+      }
     }
 
     if (j >= 1) {
@@ -530,8 +585,10 @@ export const King = (
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i + 1][j - 1] = Board[i][j];
         newBoard[i][j] = null;
-        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
           canMoveTo[i + 1][j - 1] = true;
+          if (piece) importance += valueOfPiece(piece.type);
+        }
       }
     }
 
@@ -542,8 +599,10 @@ export const King = (
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i + 1][j + 1] = Board[i][j];
         newBoard[i][j] = null;
-        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
           canMoveTo[i + 1][j + 1] = true;
+          if (piece) importance += valueOfPiece(piece.type);
+        }
       }
     }
   }
@@ -555,8 +614,10 @@ export const King = (
       let newBoard = Board.map((inner) => inner.slice());
       newBoard[i][j - 1] = Board[i][j];
       newBoard[i][j] = null;
-      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
         canMoveTo[i][j - 1] = true;
+        if (piece) importance += valueOfPiece(piece.type);
+      }
     }
   }
 
@@ -567,10 +628,15 @@ export const King = (
       let newBoard = Board.map((inner) => inner.slice());
       newBoard[i][j + 1] = Board[i][j];
       newBoard[i][j] = null;
-      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+      if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
         canMoveTo[i][j + 1] = true;
+        if (piece) importance += valueOfPiece(piece.type);
+      }
     }
   }
+  importance *= turn === "W" ? 1 : -1;
+  console.log("importance in Knight func: " + importance);
+  Board[i][j].importance = importance;
 };
 export const Pawn = (
   i: number,
@@ -579,6 +645,7 @@ export const Pawn = (
   Board: (Piece | any)[][],
   turn: String
 ) => {
+  let importance: number = 50;
   Board[i][j].turnsSinceLastMove++;
   if (turn === "W") {
     // if turn is white, pawns move up.
@@ -607,6 +674,7 @@ export const Pawn = (
           newBoard[i][j] = null;
           if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
             canMoveTo[i - 1][j - 1] = true;
+            importance += valueOfPiece(upLeft.type);
           }
         }
       } else if (
@@ -619,8 +687,10 @@ export const Pawn = (
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i - 1][j - 1] = Board[i][j];
         newBoard[i][j - 1] = null;
-        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
           canMoveTo[i - 1][j - 1] = true;
+          importance += valueOfPiece(left.type);
+        }
       }
     }
     if (j !== 7) {
@@ -633,6 +703,7 @@ export const Pawn = (
           newBoard[i][j] = null;
           if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
             canMoveTo[i - 1][j + 1] = true;
+            importance += valueOfPiece(upRight.type);
           }
         }
       } else if (
@@ -645,8 +716,10 @@ export const Pawn = (
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i - 1][j + 1] = Board[i][j];
         newBoard[i][j + 1] = null;
-        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
+        if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
           canMoveTo[i - 1][j + 1] = true;
+          importance += valueOfPiece(right.type);
+        }
       }
     }
   }
@@ -678,6 +751,7 @@ export const Pawn = (
           newBoard[i][j] = null;
           if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
             canMoveTo[i + 1][j - 1] = true;
+            importance += valueOfPiece(upLeft.type);
           }
         }
       } else if (
@@ -692,6 +766,7 @@ export const Pawn = (
         newBoard[i][j - 1] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
           canMoveTo[i + 1][j - 1] = true;
+        importance += valueOfPiece(left.type);
       }
     }
     if (j !== 7) {
@@ -704,6 +779,7 @@ export const Pawn = (
           newBoard[i][j] = null;
           if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W")) {
             canMoveTo[i + 1][j + 1] = true;
+            importance += valueOfPiece(upRight.type);
           }
         }
       } else if (
@@ -718,13 +794,17 @@ export const Pawn = (
         newBoard[i][j + 1] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
           canMoveTo[i + 1][j + 1] = true;
+        importance += valueOfPiece(right.type);
       }
     }
   }
+  importance *= turn === "W" ? 1 : -1;
+  console.log("importance in Knight func: " + importance);
+  Board[i][j].importance = importance;
 };
 
 export const pieceStateUpdate = (board: (Piece | any)[][], turn: string) => {
-  let piecesGivingCheck: number[][] = [];
+  let valueOfBoard: number = 0;
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       if (board[i][j] && board[i][j].color !== turn) {
@@ -752,10 +832,11 @@ export const pieceStateUpdate = (board: (Piece | any)[][], turn: string) => {
             Knight(i, j, board[i][j].canMoveTo, board, board[i][j].color);
             break;
         }
-      }
+        valueOfBoard += board[i][j].importance;
+      } else if (board[i][j]) valueOfBoard += board[i][j].importance;
     }
   }
-  return piecesGivingCheck;
+  return valueOfBoard;
 };
 
 const PawnGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
