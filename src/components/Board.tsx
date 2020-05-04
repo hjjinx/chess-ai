@@ -3,6 +3,7 @@ import { Piece } from "../game/Piece";
 import Square from "../components/Square";
 import { initialBoard, initiallyCanMoveTo } from "../game/InitialPosition";
 import { pieceStateUpdate } from "../game/pieceLogic";
+import MinMax, { fromTo } from "../game/MinMax";
 
 pieceStateUpdate(initialBoard, "B");
 
@@ -96,7 +97,27 @@ const Board: React.FC = () => {
     if (canMoveToHighlighted[i][k] == true) {
       setBoard((previousBoard) => movePiece(previousBoard, i, k));
       setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
-      turn === "W" ? setTurn("B") : setTurn("W");
+      if (turn === "W") {
+        let { newScore, newBestMove } = MinMax(
+          board,
+          "B",
+          10000,
+          new fromTo(1, 1, 1, 1),
+          2
+        );
+        setBoard((previousBoard) => {
+          let newBoard = previousBoard.map((inner) => inner.slice());
+          newBoard[newBestMove.x][newBestMove.y] =
+            newBoard[newBestMove.i][newBestMove.j];
+          newBoard[newBestMove.i][newBestMove.j] = null;
+          return newBoard;
+        });
+        setTurn("W");
+        pieceStateUpdate(board, turn);
+        // board[(newBestMove.x, newBestMove.y)] =
+        //   board[(newBestMove.i, newBestMove.j)];
+        // board[(newBestMove.i, newBestMove.j)] = null;
+      }
     } else {
       setCanMoveToHighlighted((canMoveTo) => {
         let newCanMoveTo = board[i][k].canMoveTo.map((inner: any): boolean[] =>

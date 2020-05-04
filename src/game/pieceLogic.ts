@@ -361,7 +361,6 @@ export const Knight = (
     }
   }
   importance *= turn === "W" ? 1 : -1;
-  console.log("importance in Knight func: " + importance);
   Board[i][j].importance = importance;
 };
 export const Bishop = (
@@ -489,7 +488,6 @@ export const Bishop = (
     } else break;
   }
   importance *= turn === "W" ? 1 : -1;
-  console.log("importance in Knight func: " + importance);
   Board[i][j].importance = importance;
 };
 export const King = (
@@ -635,7 +633,6 @@ export const King = (
     }
   }
   importance *= turn === "W" ? 1 : -1;
-  console.log("importance in Knight func: " + importance);
   Board[i][j].importance = importance;
 };
 export const Pawn = (
@@ -799,7 +796,6 @@ export const Pawn = (
     }
   }
   importance *= turn === "W" ? 1 : -1;
-  console.log("importance in Knight func: " + importance);
   Board[i][j].importance = importance;
 };
 

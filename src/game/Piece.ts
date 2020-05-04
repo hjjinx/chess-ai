@@ -12,7 +12,6 @@ export class Piece {
     else if (type === "Rook") this.importance = 150 * multiplier;
     else if (type === "Bishop") this.importance = 150 * multiplier;
     else this.importance = 50 * multiplier;
-    console.log(this.importance);
   }
 
   type: String = "";
