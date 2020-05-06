@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/chess-ai/static/css/main.6fa0b717.chunk.css",
+    "main.js": "/chess-ai/static/js/main.277f54da.chunk.js",
+    "main.js.map": "/chess-ai/static/js/main.277f54da.chunk.js.map",
+    "runtime-main.js": "/chess-ai/static/js/runtime-main.fce34246.js",
+    "runtime-main.js.map": "/chess-ai/static/js/runtime-main.fce34246.js.map",
+    "static/js/2.4367583c.chunk.js": "/chess-ai/static/js/2.4367583c.chunk.js",
+    "static/js/2.4367583c.chunk.js.map": "/chess-ai/static/js/2.4367583c.chunk.js.map",
+    "index.html": "/chess-ai/index.html",
+    "precache-manifest.d1d33220da980395917124dfd0c32121.js": "/chess-ai/precache-manifest.d1d33220da980395917124dfd0c32121.js",
+    "service-worker.js": "/chess-ai/service-worker.js",
+    "static/css/main.6fa0b717.chunk.css.map": "/chess-ai/static/css/main.6fa0b717.chunk.css.map",
+    "static/js/2.4367583c.chunk.js.LICENSE.txt": "/chess-ai/static/js/2.4367583c.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fce34246.js",
+    "static/js/2.4367583c.chunk.js",
+    "static/css/main.6fa0b717.chunk.css",
+    "static/js/main.277f54da.chunk.js"
+  ]
+}
