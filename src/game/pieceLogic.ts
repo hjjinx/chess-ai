@@ -644,6 +644,7 @@ export const Pawn = (
 ) => {
   let importance: number = 50;
   Board[i][j].turnsSinceLastMove++;
+  // console.log(i, j, Board, turn);
   if (turn === "W") {
     // if turn is white, pawns move up.
     if (Board[i - 1][j] === null) {
@@ -652,7 +653,11 @@ export const Pawn = (
       newBoard[i][j] = null;
       if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
         canMoveTo[i - 1][j] = true; //Highlighting the box below the pawn.
-      if (Board[i][j].numOfMoves === 0 && Board[i - 2][j] === null) {
+      if (
+        Board[i][j] &&
+        Board[i][j].numOfMoves === 0 &&
+        Board[i - 2][j] === null
+      ) {
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i - 2][j] = Board[i][j];
         newBoard[i][j] = null;
@@ -836,6 +841,7 @@ export const pieceStateUpdate = (board: (Piece | any)[][], turn: string) => {
 };
 
 const PawnGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
+  if (i === 0 || i === 7) return false;
   if (Board[i][j].color === "W") {
     if (j !== 0) {
       const upLeft = Board[i - 1][j - 1];

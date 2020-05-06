@@ -14,6 +14,7 @@ const Board: React.FC = () => {
   const [canMoveToHighlighted, setCanMoveToHighlighted] = useState(() => [
     ...initiallyCanMoveTo,
   ]);
+  console.log(board);
   const clickNothing = () => {
     setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
     setPreviousClick([9, 9]);
@@ -76,8 +77,7 @@ const Board: React.FC = () => {
     newBoard[i][k].turnsSinceLastMove = 0;
 
     // (piecesGivingCheck = [[i, k,], [i, k]]) piece locations that can directly kill the King in the next turn
-    pieceStateUpdate(newBoard, turn);
-
+    // pieceStateUpdate(newBoard, turn);
     return newBoard;
   };
 
@@ -95,29 +95,20 @@ const Board: React.FC = () => {
 
     // If the Piece that the user previously clicked on can move to [i, k]
     if (canMoveToHighlighted[i][k] == true) {
-      setBoard((previousBoard) => movePiece(previousBoard, i, k));
+      const newBoard = movePiece(board, i, k);
+      setBoard(newBoard);
       setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
-      if (turn === "W") {
-        let { newScore, newBestMove } = MinMax(
-          board,
-          "B",
-          10000,
-          new fromTo(1, 1, 1, 1),
-          2
-        );
-        setBoard((previousBoard) => {
-          let newBoard = previousBoard.map((inner) => inner.slice());
-          newBoard[newBestMove.x][newBestMove.y] =
-            newBoard[newBestMove.i][newBestMove.j];
-          newBoard[newBestMove.i][newBestMove.j] = null;
-          return newBoard;
-        });
-        setTurn("W");
-        pieceStateUpdate(board, turn);
-        // board[(newBestMove.x, newBestMove.y)] =
-        //   board[(newBestMove.i, newBestMove.j)];
-        // board[(newBestMove.i, newBestMove.j)] = null;
-      }
+
+      let { score: scoreToSend, moveToMake } = MinMax(newBoard, "B", 2, 2);
+      setBoard((previousBoard) => {
+        let newBoard = previousBoard.map((inner) => inner.slice());
+        newBoard[moveToMake.x][moveToMake.y] =
+          newBoard[moveToMake.i][moveToMake.j];
+        newBoard[moveToMake.i][moveToMake.j] = null;
+        return newBoard;
+      });
+      setTurn("W");
+      pieceStateUpdate(board, turn === "W" ? "B" : "W");
     } else {
       setCanMoveToHighlighted((canMoveTo) => {
         let newCanMoveTo = board[i][k].canMoveTo.map((inner: any): boolean[] =>
