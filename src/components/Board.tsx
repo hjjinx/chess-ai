@@ -105,10 +105,11 @@ const Board: React.FC = () => {
         newBoard[moveToMake.x][moveToMake.y] =
           newBoard[moveToMake.i][moveToMake.j];
         newBoard[moveToMake.i][moveToMake.j] = null;
+        newBoard[moveToMake.x][moveToMake.y].numOfMoves++;
         return newBoard;
       });
       setTurn("W");
-      pieceStateUpdate(board, turn === "W" ? "B" : "W");
+      pieceStateUpdate(board, turn);
     } else {
       setCanMoveToHighlighted((canMoveTo) => {
         let newCanMoveTo = board[i][k].canMoveTo.map((inner: any): boolean[] =>

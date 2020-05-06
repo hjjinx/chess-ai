@@ -43,14 +43,12 @@ const MinMax = (
   totalIterations: number
 ): { score: number; moveToMake: fromTo } => {
   // If this move is the bottom-most move in the MinMax search tree
-  if (iterationsLeft === 0) {
-    // let currentScore = analyseBoard(board);
-    // console.log(currentScore, iterationsLeft, board);
+  if (iterationsLeft === 0)
     return {
       score: analyseBoard(board),
       moveToMake: new fromTo(1, 1, 1, 1),
     };
-  }
+
   // analyseBoard(board);
   pieceStateUpdate(board, turn === "W" ? "B" : "W");
   console.log(board);
@@ -61,9 +59,11 @@ const MinMax = (
       // board[i][j] represents each piece.
       if (!board[i][j] || board[i][j].color !== turn) continue;
       // Create a copy of the piece because piece.canMoveTo will change.
-      let piece = Object.assign({}, board[i][j]);
+      // let piece = Object.assign({}, board[i][j]);
+      let newBoard = JSON.parse(JSON.stringify(board));
       for (let x = 0; x < 8; x++) {
         for (let y = 0; y < 8; y++) {
+          let piece = newBoard[i][j];
           // board[i][j].canMoveTo[x][y] represents each possible move by board[i][j].
           // Check board[i][j].canMoveTo[x][y], play that move, analyse and save the new score
           if (piece.canMoveTo[x][y]) {
@@ -71,11 +71,11 @@ const MinMax = (
             // console.log(i, j, x, y, board[i][j].canMoveTo);
             // let newBoard = board.map((inner) => inner.slice());
             let newBoard = board.map((inner) => inner.slice());
-            newBoard[x][y] = board[i][j];
+            newBoard[x][y] = newBoard[i][j];
             newBoard[i][j] = null;
 
             // Call MinMax again recursively on the new state of the Board.
-            pieceStateUpdate(newBoard, turn === "W" ? "B" : "W");
+            // pieceStateUpdate(newBoard, turn === "W" ? "B" : "W");
             let { score: scoreToSend, moveToMake } = MinMax(
               newBoard,
               turn === "W" ? "B" : "W",
@@ -103,7 +103,7 @@ const MinMax = (
     }
   }
   console.log(board);
-  console.log(scoresAndMoves);
+  console.log(turn, scoresAndMoves);
   let scoreToSend = 0;
   if (turn === "W") {
     scoreToSend = -10000;
@@ -118,7 +118,7 @@ const MinMax = (
       if (intScore < scoreToSend) scoreToSend = intScore;
     }
   }
-
+  pieceStateUpdate(board, turn === "W" ? "B" : "W");
   return { score: scoreToSend, moveToMake: scoresAndMoves[scoreToSend] };
 
   // return { scoreToSend: 0, moveToMake: new fromTo(1, 1, 2, 1) };
