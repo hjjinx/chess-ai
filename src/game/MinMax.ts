@@ -50,24 +50,22 @@ const MinMax = (
     };
 
   // analyseBoard(board);
-  pieceStateUpdate(board, turn === "W" ? "B" : "W");
-  console.log(board);
+  let newBoard = JSON.parse(JSON.stringify(board));
+  pieceStateUpdate(newBoard, turn);
 
   let scoresAndMoves: any = {};
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       // board[i][j] represents each piece.
-      if (!board[i][j] || board[i][j].color !== turn) continue;
+      if (!newBoard[i][j] || newBoard[i][j].color !== turn) continue;
       // Create a copy of the piece because piece.canMoveTo will change.
       // let piece = Object.assign({}, board[i][j]);
-      let newBoard = JSON.parse(JSON.stringify(board));
       for (let x = 0; x < 8; x++) {
         for (let y = 0; y < 8; y++) {
           let piece = newBoard[i][j];
           // board[i][j].canMoveTo[x][y] represents each possible move by board[i][j].
           // Check board[i][j].canMoveTo[x][y], play that move, analyse and save the new score
           if (piece.canMoveTo[x][y]) {
-            console.log(i, j, piece.type, piece.canMoveTo);
             // console.log(i, j, x, y, board[i][j].canMoveTo);
             // let newBoard = board.map((inner) => inner.slice());
             let newBoard = board.map((inner) => inner.slice());
@@ -102,8 +100,8 @@ const MinMax = (
       }
     }
   }
-  console.log(board);
-  console.log(turn, scoresAndMoves);
+  // console.log(board);
+  // console.log(turn, scoresAndMoves);
   let scoreToSend = 0;
   if (turn === "W") {
     scoreToSend = -10000;
@@ -118,26 +116,14 @@ const MinMax = (
       if (intScore < scoreToSend) scoreToSend = intScore;
     }
   }
-  pieceStateUpdate(board, turn === "W" ? "B" : "W");
   return { score: scoreToSend, moveToMake: scoresAndMoves[scoreToSend] };
-
-  // return { scoreToSend: 0, moveToMake: new fromTo(1, 1, 2, 1) };
-
-  // let { newScore, newBestMove } = MinMax(
-  //   bestFutureMove.newBoard,
-  //   turn === "W" ? "B" : "W",
-  //   turn === "W" ? -10000 : 10000,
-  //   new fromTo(1, 2, 1, 1),
-  //   iterationsLeft - 1
-  // );
-  // if (turn === "W" ? newScore > bestScore : newScore < bestScore)
-  //   return { newScore, newBestMove: thisMove };
 };
 
 export default MinMax;
 
 const analyseBoard = (board: (Piece | any)[][]) => {
   let valueOfBoard: number = 0;
+  board = JSON.parse(JSON.stringify(board));
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       if (board[i][j]) {
@@ -164,9 +150,7 @@ const analyseBoard = (board: (Piece | any)[][]) => {
         }
         valueOfBoard += board[i][j].importance;
       }
-      // console.log(valueOfBoard);
     }
   }
-  // console.log(board);
   return valueOfBoard;
 };

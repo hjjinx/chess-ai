@@ -734,7 +734,7 @@ export const Pawn = (
       newBoard[i][j] = null;
       if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
         canMoveTo[i + 1][j] = true; //Highlighting the box above the pawn.
-      if (Board[i][j].numOfMoves === 0 && Board[i + 2][j] === null) {
+      if (Board[i][j].numOfMoves === 0 && Board[i + 2][j] == null) {
         let newBoard = Board.map((inner) => inner.slice());
         newBoard[i + 2][j] = Board[i][j];
         newBoard[i][j] = null;
@@ -808,7 +808,7 @@ export const pieceStateUpdate = (board: (Piece | any)[][], turn: string) => {
   let valueOfBoard: number = 0;
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
-      if (board[i][j] && board[i][j].color !== turn) {
+      if (board[i][j] && board[i][j].color === turn) {
         board[i][j].canMoveTo = initiallyCanMoveTo.map((inner) =>
           inner.slice()
         );

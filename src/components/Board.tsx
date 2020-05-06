@@ -5,7 +5,7 @@ import { initialBoard, initiallyCanMoveTo } from "../game/InitialPosition";
 import { pieceStateUpdate } from "../game/pieceLogic";
 import MinMax, { fromTo } from "../game/MinMax";
 
-pieceStateUpdate(initialBoard, "B");
+pieceStateUpdate(initialBoard, "W");
 
 const Board: React.FC = () => {
   const [board, setBoard] = useState(() => initialBoard);
@@ -14,7 +14,6 @@ const Board: React.FC = () => {
   const [canMoveToHighlighted, setCanMoveToHighlighted] = useState(() => [
     ...initiallyCanMoveTo,
   ]);
-  console.log(board);
   const clickNothing = () => {
     setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
     setPreviousClick([9, 9]);
@@ -106,10 +105,10 @@ const Board: React.FC = () => {
           newBoard[moveToMake.i][moveToMake.j];
         newBoard[moveToMake.i][moveToMake.j] = null;
         newBoard[moveToMake.x][moveToMake.y].numOfMoves++;
+        pieceStateUpdate(newBoard, "W");
         return newBoard;
       });
       setTurn("W");
-      pieceStateUpdate(board, turn);
     } else {
       setCanMoveToHighlighted((canMoveTo) => {
         let newCanMoveTo = board[i][k].canMoveTo.map((inner: any): boolean[] =>
