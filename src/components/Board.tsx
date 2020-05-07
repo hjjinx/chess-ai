@@ -106,6 +106,13 @@ const Board: React.FC = () => {
         newBoard[moveToMake.i][moveToMake.j] = null;
         newBoard[moveToMake.x][moveToMake.y].numOfMoves++;
         pieceStateUpdate(newBoard, "W");
+        setCanMoveToHighlighted((previousCanMoveTo) => {
+          let toReturn = initiallyCanMoveTo.map((inner) => inner.slice());
+          toReturn[moveToMake.x][moveToMake.y] = true;
+          toReturn[moveToMake.i][moveToMake.j] = true;
+          setPreviousClick([moveToMake.x, moveToMake.y]);
+          return toReturn;
+        });
         return newBoard;
       });
       setTurn("W");
