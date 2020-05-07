@@ -7,6 +7,7 @@ import {
   Knight,
   pieceStateUpdate,
 } from "./pieceLogic";
+import { PawnScore } from "./AnalysePosition";
 
 /*
 Max:      O
@@ -39,8 +40,7 @@ export class fromTo {
 const MinMax = (
   board: (Piece | any)[][],
   turn: "W" | "B",
-  iterationsLeft: number,
-  totalIterations: number
+  iterationsLeft: number
 ): { score: number; moveToMake: fromTo } => {
   // If this move is the bottom-most move in the MinMax search tree
   if (iterationsLeft === 0)
@@ -77,8 +77,7 @@ const MinMax = (
             let { score: scoreToSend, moveToMake } = MinMax(
               newBoard,
               turn === "W" ? "B" : "W",
-              iterationsLeft - 1,
-              totalIterations
+              iterationsLeft - 1
             );
 
             let thisMove = new fromTo(i, j, x, y);
@@ -129,7 +128,7 @@ const analyseBoard = (board: (Piece | any)[][]) => {
       if (board[i][j]) {
         switch (board[i][j].type) {
           case "Pawn":
-            Pawn(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            PawnScore(i, j, board);
             break;
           case "Bishop":
             Bishop(i, j, board[i][j].canMoveTo, board, board[i][j].color);

@@ -98,7 +98,7 @@ const Board: React.FC = () => {
       setBoard(newBoard);
       setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
 
-      let { score: scoreToSend, moveToMake } = MinMax(newBoard, "B", 2, 2);
+      let { score: scoreToSend, moveToMake } = MinMax(newBoard, "B", 2);
       setBoard((previousBoard) => {
         let newBoard = previousBoard.map((inner) => inner.slice());
         newBoard[moveToMake.x][moveToMake.y] =
@@ -130,7 +130,6 @@ const Board: React.FC = () => {
             return (
               <Square
                 clickNothing={clickNothing}
-                rows={rows}
                 k={k}
                 i={i}
                 key={`${i}_${k}`}

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Piece } from "../game/Piece";
 
 interface Props {
-  rows: any;
   k: number;
   i: number;
   piece: Piece | null;
@@ -39,12 +38,13 @@ const Square: React.FC<Props> = (props) => {
         boxSizing: "border-box",
       }}
     >
-      {props.rows[props.k] && (
+      {props.piece && (
         <img
-          src={`./gfx/${props.rows[props.k].color}${
-            props.rows[props.k].type
-          }.png`}
-          alt="b bishop"
+          src={
+            process.env.PUBLIC_URL +
+            `/gfx/${props.piece.color}${props.piece.type}.png`
+          }
+          alt={`${props.piece.color} ${props.piece.type}`}
           style={{ margin: "auto", height: "80%" }}
         />
       )}

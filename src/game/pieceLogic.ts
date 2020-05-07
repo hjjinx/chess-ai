@@ -10,7 +10,7 @@ import { initiallyCanMoveTo } from "./InitialPosition";
 // Castling
 // Pawn promotion
 
-const valueOfPiece = (
+export const valueOfPiece = (
   type: "King" | "Rook" | "Knight" | "Bishop" | "Pawn" | "Queen"
 ) => {
   switch (type) {
@@ -1118,7 +1118,10 @@ const KingGivesCheck = (i: number, j: number, Board: (Piece | any)[][]) => {
 };
 
 // checkForWhom will be opposite color of the piece that called this function.
-const isUnderCheck = (board: (Piece | any)[][], checkForWhom: String) => {
+export const isUnderCheck = (
+  board: (Piece | any)[][],
+  checkForWhom: String
+) => {
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       if (board[i][j] && board[i][j].color === checkForWhom) {
