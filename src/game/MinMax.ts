@@ -7,7 +7,13 @@ import {
   Knight,
   pieceStateUpdate,
 } from "./pieceLogic";
-import { PawnScore } from "./AnalysePosition";
+import {
+  PawnScore,
+  RookScore,
+  BishopScore,
+  KingScore,
+  KnightScore,
+} from "./AnalysePosition";
 
 /*
 Max:      O
@@ -122,7 +128,7 @@ export default MinMax;
 
 const analyseBoard = (board: (Piece | any)[][]) => {
   let valueOfBoard: number = 0;
-  board = JSON.parse(JSON.stringify(board));
+  // board = JSON.parse(JSON.stringify(board));
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       if (board[i][j]) {
@@ -131,20 +137,20 @@ const analyseBoard = (board: (Piece | any)[][]) => {
             PawnScore(i, j, board);
             break;
           case "Bishop":
-            Bishop(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            BishopScore(i, j, board);
             break;
           case "King":
-            King(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            KingScore(i, j, board);
             break;
           case "Queen":
-            Bishop(i, j, board[i][j].canMoveTo, board, board[i][j].color);
-            Rook(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            BishopScore(i, j, board);
+            RookScore(i, j, board);
             break;
           case "Rook":
-            Rook(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            RookScore(i, j, board);
             break;
           case "Knight":
-            Knight(i, j, board[i][j].canMoveTo, board, board[i][j].color);
+            KnightScore(i, j, board);
             break;
         }
         valueOfBoard += board[i][j].importance;
