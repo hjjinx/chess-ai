@@ -9,7 +9,7 @@ export const initialBoard: (Piece | any)[][] = [
     new Piece("King", "B"),
     new Piece("Bishop", "B"),
     new Piece("Knight", "B"),
-    new Piece("Rook", "B")
+    new Piece("Rook", "B"),
   ],
   [
     new Piece("Pawn", "B"),
@@ -19,7 +19,7 @@ export const initialBoard: (Piece | any)[][] = [
     new Piece("Pawn", "B"),
     new Piece("Pawn", "B"),
     new Piece("Pawn", "B"),
-    new Piece("Pawn", "B")
+    new Piece("Pawn", "B"),
   ],
   [null, null, null, null, null, null, null, null],
   [null, null, null, null, null, null, null, null],
@@ -33,7 +33,7 @@ export const initialBoard: (Piece | any)[][] = [
     new Piece("Pawn", "W"),
     new Piece("Pawn", "W"),
     new Piece("Pawn", "W"),
-    new Piece("Pawn", "W")
+    new Piece("Pawn", "W"),
   ],
   [
     new Piece("Rook", "W"),
@@ -43,8 +43,8 @@ export const initialBoard: (Piece | any)[][] = [
     new Piece("King", "W"),
     new Piece("Bishop", "W"),
     new Piece("Knight", "W"),
-    new Piece("Rook", "W")
-  ]
+    new Piece("Rook", "W"),
+  ],
 ];
 
 export const initiallyCanMoveTo: boolean[][] = [
@@ -55,5 +55,5 @@ export const initiallyCanMoveTo: boolean[][] = [
   [false, false, false, false, false, false, false, false],
   [false, false, false, false, false, false, false, false],
   [false, false, false, false, false, false, false, false],
-  [false, false, false, false, false, false, false, false]
+  [false, false, false, false, false, false, false, false],
 ];

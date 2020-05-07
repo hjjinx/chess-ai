@@ -121,6 +121,8 @@ const MinMax = (
       if (intScore < scoreToSend) scoreToSend = intScore;
     }
   }
+  if (Object.keys(scoresAndMoves).length === 0)
+    return { score: -100000, moveToMake: new fromTo(-1, -1, -1, -1) };
   return { score: scoreToSend, moveToMake: scoresAndMoves[scoreToSend] };
 };
 
