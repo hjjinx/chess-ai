@@ -1,12 +1,5 @@
 import { Piece } from "./Piece";
-import {
-  Pawn,
-  Bishop,
-  King,
-  Rook,
-  Knight,
-  pieceStateUpdate,
-} from "./pieceLogic";
+import { pieceStateUpdate } from "./pieceLogic";
 import {
   PawnScore,
   RookScore,
@@ -16,11 +9,11 @@ import {
 } from "./AnalysePosition";
 
 /*
-Max:      O
-        /   \
-Min    O     O * 10
-      / \   / \
-Max: O   O O   O * 200
+Min (B):      O
+            /   \
+Max (W)    O     O * 10
+          / \   / \
+Min: (B) O   O O   O * 200
 */
 
 export class fromTo {
@@ -46,7 +39,9 @@ export class fromTo {
 const MinMax = (
   board: (Piece | any)[][],
   turn: "W" | "B",
-  iterationsLeft: number
+  iterationsLeft: number,
+  alpha: number,
+  beta: number
 ): { score: number; moveToMake: fromTo } => {
   // If this move is the bottom-most move in the MinMax search tree
   if (iterationsLeft === 0)
@@ -54,26 +49,56 @@ const MinMax = (
       score: analyseBoard(board),
       moveToMake: new fromTo(1, 1, 1, 1),
     };
+  let scoresAndMoves: any = {};
 
-  // analyseBoard(board);
+  const returnValue = () => {
+    console.log("RETURNING:");
+    console.log(board);
+    let scoreToSend = 0;
+    if (turn === "W") {
+      scoreToSend = -100000;
+      for (let score in scoresAndMoves) {
+        let intScore = parseInt(score);
+        if (intScore > scoreToSend) scoreToSend = intScore;
+      }
+    } else {
+      scoreToSend = 100000;
+      for (let score in scoresAndMoves) {
+        let intScore = parseInt(score);
+        if (intScore < scoreToSend) scoreToSend = intScore;
+      }
+    }
+    console.log(scoresAndMoves);
+    console.log(
+      "Best Move: ",
+      turn,
+      iterationsLeft,
+      scoreToSend,
+      scoresAndMoves[scoreToSend]
+    );
+    console.log("\n\n\n");
+    if (Object.keys(scoresAndMoves).length === 0)
+      return { score: -scoreToSend, moveToMake: new fromTo(-1, -1, -1, -1) };
+    return { score: scoreToSend, moveToMake: scoresAndMoves[scoreToSend] };
+  };
+
+  // Create a copy of the piece because piece.canMoveTo will change.
   let newBoard = JSON.parse(JSON.stringify(board));
   pieceStateUpdate(newBoard, turn);
 
-  let scoresAndMoves: any = {};
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
+      let count = 0;
       // board[i][j] represents each piece.
       if (!newBoard[i][j] || newBoard[i][j].color !== turn) continue;
-      // Create a copy of the piece because piece.canMoveTo will change.
-      // let piece = Object.assign({}, board[i][j]);
       for (let x = 0; x < 8; x++) {
         for (let y = 0; y < 8; y++) {
           let piece = newBoard[i][j];
           // board[i][j].canMoveTo[x][y] represents each possible move by board[i][j].
           // Check board[i][j].canMoveTo[x][y], play that move, analyse and save the new score
           if (piece.canMoveTo[x][y]) {
+            count++;
             // console.log(i, j, x, y, board[i][j].canMoveTo);
-            // let newBoard = board.map((inner) => inner.slice());
             let newBoard = board.map((inner) => inner.slice());
             newBoard[x][y] = newBoard[i][j];
             newBoard[i][j] = null;
@@ -83,12 +108,29 @@ const MinMax = (
             let { score: scoreToSend, moveToMake } = MinMax(
               newBoard,
               turn === "W" ? "B" : "W",
-              iterationsLeft - 1
+              iterationsLeft - 1,
+              alpha,
+              beta
             );
-
             let thisMove = new fromTo(i, j, x, y);
 
             scoresAndMoves[scoreToSend] = thisMove;
+
+            // if (turn === "W" && scoreToSend !== 100000) {
+            //   alpha = Math.max(alpha, scoreToSend, -100000);
+            // } else if (scoreToSend !== -100000) {
+            //   beta = Math.min(beta, scoreToSend, 100000);
+            // }
+
+            // if (beta <= alpha) {
+            //   console.log("Broke out after " + count + " iterations");
+            //   return returnValue();
+            // }
+
+            // Alpha-Beta Pruning
+            // Alpha is high, Beta is low
+            // Beta: The value returned is the maximum in the sub-tree
+            // Alpha represents the minimum best value. Beta represents the maximum best value
 
             // if (
             //   turn === "W"
@@ -105,25 +147,8 @@ const MinMax = (
       }
     }
   }
-  // console.log(board);
-  // console.log(turn, scoresAndMoves);
-  let scoreToSend = 0;
-  if (turn === "W") {
-    scoreToSend = -10000;
-    for (let score in scoresAndMoves) {
-      let intScore = parseInt(score);
-      if (intScore > scoreToSend) scoreToSend = intScore;
-    }
-  } else {
-    scoreToSend = 10000;
-    for (let score in scoresAndMoves) {
-      let intScore = parseInt(score);
-      if (intScore < scoreToSend) scoreToSend = intScore;
-    }
-  }
-  if (Object.keys(scoresAndMoves).length === 0)
-    return { score: -100000, moveToMake: new fromTo(-1, -1, -1, -1) };
-  return { score: scoreToSend, moveToMake: scoresAndMoves[scoreToSend] };
+
+  return returnValue();
 };
 
 export default MinMax;

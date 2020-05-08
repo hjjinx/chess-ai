@@ -159,9 +159,9 @@ export const RookScore = (i: number, j: number, Board: (Piece | any)[][]) => {
 
       if (piece) {
         if (piece.color === turn) break;
-        else if (!doesThisVerticalMoveResultInCheck(r, j)) {
+        else if (!doesThisVerticalMoveResultInCheck(r, j))
           importance += valueOfPiece(piece.type);
-        } else break;
+        break;
       }
     }
   }
@@ -174,7 +174,7 @@ export const RookScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         if (piece.color === turn) break;
         else if (!doesThisVerticalMoveResultInCheck(r, j))
           importance += valueOfPiece(piece.type);
-        else break;
+        break;
       }
     }
   }
@@ -187,7 +187,7 @@ export const RookScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         if (piece.color === turn) break;
         else if (!doesThisHorizontalMoveResultInCheck(i, r))
           importance += valueOfPiece(piece.type);
-        else break;
+        break;
       }
     }
   }
@@ -200,7 +200,7 @@ export const RookScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         if (piece.color === turn) break;
         else if (!doesThisHorizontalMoveResultInCheck(i, r))
           importance += valueOfPiece(piece.type);
-        else break;
+        break;
       }
     }
   }
@@ -228,7 +228,7 @@ export const BishopScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         if (piece.color === Board[i][j].color) break;
         else if (!isUnderCheckIfThisMoveHappens(r))
           importance += valueOfPiece(piece.type);
-        else break;
+        break;
       }
     } else break;
   }
@@ -249,7 +249,7 @@ export const BishopScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         if (piece.color === Board[i][j].color) break;
         else if (!isUnderCheckIfThisMoveHappens(r))
           importance += valueOfPiece(piece.type);
-        else break;
+        break;
       }
     } else break;
   }
@@ -270,7 +270,7 @@ export const BishopScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         if (piece.color === Board[i][j].color) break;
         else if (!isUnderCheckIfThisMoveHappens(r))
           importance += valueOfPiece(piece.type);
-        else break;
+        break;
       }
     }
   }
@@ -291,7 +291,7 @@ export const BishopScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         if (piece.color === Board[i][j].color) break;
         else if (!isUnderCheckIfThisMoveHappens(r))
           importance += valueOfPiece(piece.type);
-        else break;
+        break;
       }
     } else break;
   }

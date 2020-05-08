@@ -98,7 +98,14 @@ const Board: React.FC = () => {
       setBoard(newBoard);
       setCanMoveToHighlighted(initiallyCanMoveTo.map((inner) => inner.slice()));
 
-      let { score: scoreToSend, moveToMake } = MinMax(newBoard, "B", 3);
+      let { score: scoreToSend, moveToMake } = MinMax(
+        newBoard,
+        "B",
+        2,
+        -100000,
+        100000
+      );
+      console.log("FINAL");
       console.log(scoreToSend, moveToMake);
       if (scoreToSend === -100000) {
         alert("CheckMate! You defeated the AI :)");
