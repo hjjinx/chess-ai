@@ -116,32 +116,21 @@ const MinMax = (
 
             scoresAndMoves[scoreToSend] = thisMove;
 
-            // if (turn === "W" && scoreToSend !== 100000) {
-            //   alpha = Math.max(alpha, scoreToSend, -100000);
-            // } else if (scoreToSend !== -100000) {
-            //   beta = Math.min(beta, scoreToSend, 100000);
-            // }
+            if (turn === "W" && scoreToSend !== 100000) {
+              alpha = Math.max(alpha, scoreToSend, -100000);
+            } else if (scoreToSend !== -100000) {
+              beta = Math.min(beta, scoreToSend, 100000);
+            }
 
-            // if (beta <= alpha) {
-            //   console.log("Broke out after " + count + " iterations");
-            //   return returnValue();
-            // }
+            if (beta <= alpha) {
+              console.log("Broke out after " + count + " iterations");
+              return returnValue();
+            }
 
             // Alpha-Beta Pruning
             // Alpha is high, Beta is low
             // Beta: The value returned is the maximum in the sub-tree
             // Alpha represents the minimum best value. Beta represents the maximum best value
-
-            // if (
-            //   turn === "W"
-            //     ? scoreAfterThisMove > bestFutureMove.newScore
-            //     : scoreAfterThisMove < bestFutureMove.newScore
-            // )
-            //   bestFutureMove = {
-            //     newScore: scoreAfterThisMove,
-            //     newBestMove: thisMove,
-            //     newBoard,
-            //   };
           }
         }
       }

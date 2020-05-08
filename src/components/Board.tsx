@@ -101,7 +101,7 @@ const Board: React.FC = () => {
       let { score: scoreToSend, moveToMake } = MinMax(
         newBoard,
         "B",
-        2,
+        3,
         -100000,
         100000
       );
