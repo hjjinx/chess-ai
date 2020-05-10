@@ -101,16 +101,16 @@ const Board: React.FC = () => {
       let { score: scoreToSend, moveToMake } = MinMax(
         newBoard,
         "B",
-        3,
+        4,
         -100000,
         100000
       );
-      console.log("FINAL");
-      console.log(scoreToSend, moveToMake);
-      if (scoreToSend === -100000) {
+      console.log("\n\n\n\n\n\n\n\n\n\n");
+      if (scoreToSend === 100000) {
         alert("CheckMate! You defeated the AI :)");
         return;
       }
+      console.log(scoreToSend, moveToMake);
       setBoard((previousBoard) => {
         let newBoard = previousBoard.map((inner) => inner.slice());
         newBoard[moveToMake.x][moveToMake.y] =

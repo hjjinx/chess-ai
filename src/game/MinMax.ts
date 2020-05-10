@@ -49,37 +49,41 @@ const MinMax = (
       score: analyseBoard(board),
       moveToMake: new fromTo(1, 1, 1, 1),
     };
-  let scoresAndMoves: any = {};
 
+  // let scoresAndMoves: any = {};
+  let bestScoreYet = turn === "W" ? -100000 : 100000;
+  let bestMoveYet: fromTo;
   const returnValue = () => {
-    console.log("RETURNING:");
-    console.log(board);
-    let scoreToSend = 0;
-    if (turn === "W") {
-      scoreToSend = -100000;
-      for (let score in scoresAndMoves) {
-        let intScore = parseInt(score);
-        if (intScore > scoreToSend) scoreToSend = intScore;
-      }
-    } else {
-      scoreToSend = 100000;
-      for (let score in scoresAndMoves) {
-        let intScore = parseInt(score);
-        if (intScore < scoreToSend) scoreToSend = intScore;
-      }
-    }
-    console.log(scoresAndMoves);
-    console.log(
-      "Best Move: ",
-      turn,
-      iterationsLeft,
-      scoreToSend,
-      scoresAndMoves[scoreToSend]
-    );
-    console.log("\n\n\n");
-    if (Object.keys(scoresAndMoves).length === 0)
-      return { score: -scoreToSend, moveToMake: new fromTo(-1, -1, -1, -1) };
-    return { score: scoreToSend, moveToMake: scoresAndMoves[scoreToSend] };
+    // console.log("RETURNING:");
+    // console.log(board);
+
+    // let scoreToSend = 0;
+    // if (turn === "W") {
+    //   scoreToSend = -100000;
+    //   for (let score in scoresAndMoves) {
+    //     let intScore = parseInt(score);
+    //     if (intScore > scoreToSend) scoreToSend = intScore;
+    //   }
+    // } else {
+    //   scoreToSend = 100000;
+    //   for (let score in scoresAndMoves) {
+    //     let intScore = parseInt(score);
+    //     if (intScore < scoreToSend) scoreToSend = intScore;
+    //   }
+    // }
+
+    // console.log(scoresAndMoves);
+    // console.log(
+    //   "Best Move: ",
+    //   turn,
+    //   iterationsLeft,
+    //   scoreToSend,
+    //   scoresAndMoves[scoreToSend]
+    // );
+    // console.log("\n\n\n");
+    // if (Object.keys(scoresAndMoves).length === 0)
+    //   return { score: -bestScoreYet, moveToMake: new fromTo(-1, -1, -1, -1) };
+    return { score: bestScoreYet, moveToMake: bestMoveYet };
   };
 
   // Create a copy of the piece because piece.canMoveTo will change.
@@ -94,19 +98,19 @@ const MinMax = (
       for (let x = 0; x < 8; x++) {
         for (let y = 0; y < 8; y++) {
           let piece = newBoard[i][j];
-          // board[i][j].canMoveTo[x][y] represents each possible move by board[i][j].
+          // board[i][j].canMoveTo represents each possible move by board[i][j].
           // Check board[i][j].canMoveTo[x][y], play that move, analyse and save the new score
           if (piece.canMoveTo[x][y]) {
             count++;
             // console.log(i, j, x, y, board[i][j].canMoveTo);
-            let newBoard = board.map((inner) => inner.slice());
-            newBoard[x][y] = newBoard[i][j];
-            newBoard[i][j] = null;
+            let copyOfNewBoard = newBoard.map((inner: any) => inner.slice());
+            copyOfNewBoard[x][y] = copyOfNewBoard[i][j];
+            copyOfNewBoard[i][j] = null;
 
             // Call MinMax again recursively on the new state of the Board.
             // pieceStateUpdate(newBoard, turn === "W" ? "B" : "W");
             let { score: scoreToSend, moveToMake } = MinMax(
-              newBoard,
+              copyOfNewBoard,
               turn === "W" ? "B" : "W",
               iterationsLeft - 1,
               alpha,
@@ -114,7 +118,16 @@ const MinMax = (
             );
             let thisMove = new fromTo(i, j, x, y);
 
-            scoresAndMoves[scoreToSend] = thisMove;
+            // scoresAndMoves[scoreToSend] = thisMove;
+
+            if (
+              turn === "W"
+                ? scoreToSend > bestScoreYet
+                : scoreToSend < bestScoreYet
+            ) {
+              bestScoreYet = scoreToSend;
+              bestMoveYet = thisMove;
+            }
 
             if (turn === "W" && scoreToSend !== 100000) {
               alpha = Math.max(alpha, scoreToSend, -100000);
@@ -123,7 +136,7 @@ const MinMax = (
             }
 
             if (beta <= alpha) {
-              console.log("Broke out after " + count + " iterations");
+              // console.log("Broke out after " + count + " iterations");
               return returnValue();
             }
 

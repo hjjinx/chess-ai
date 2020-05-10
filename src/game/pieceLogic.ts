@@ -15,7 +15,7 @@ export const valueOfPiece = (
 ) => {
   switch (type) {
     case "King":
-      return 5000;
+      return 1000;
     case "Rook":
       return 100;
     case "Knight":
