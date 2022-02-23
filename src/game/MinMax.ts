@@ -8,14 +8,6 @@ import {
   KnightScore,
 } from "./AnalysePosition";
 
-/*
-Min (B):      O
-            /   \
-Max (W)    O     O * 10
-          / \   / \
-Min: (B) O   O O   O * 200
-*/
-
 export class fromTo {
   constructor(
     i: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | number,
@@ -54,35 +46,6 @@ const MinMax = (
   let bestScoreYet = turn === "W" ? -100000 : 100000;
   let bestMoveYet: fromTo;
   const returnValue = () => {
-    // console.log("RETURNING:");
-    // console.log(board);
-
-    // let scoreToSend = 0;
-    // if (turn === "W") {
-    //   scoreToSend = -100000;
-    //   for (let score in scoresAndMoves) {
-    //     let intScore = parseInt(score);
-    //     if (intScore > scoreToSend) scoreToSend = intScore;
-    //   }
-    // } else {
-    //   scoreToSend = 100000;
-    //   for (let score in scoresAndMoves) {
-    //     let intScore = parseInt(score);
-    //     if (intScore < scoreToSend) scoreToSend = intScore;
-    //   }
-    // }
-
-    // console.log(scoresAndMoves);
-    // console.log(
-    //   "Best Move: ",
-    //   turn,
-    //   iterationsLeft,
-    //   scoreToSend,
-    //   scoresAndMoves[scoreToSend]
-    // );
-    // console.log("\n\n\n");
-    // if (Object.keys(scoresAndMoves).length === 0)
-    //   return { score: -bestScoreYet, moveToMake: new fromTo(-1, -1, -1, -1) };
     return { score: bestScoreYet, moveToMake: bestMoveYet };
   };
 

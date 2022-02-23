@@ -7,7 +7,7 @@ export class Piece {
     this.color = color;
     const multiplier = color === "W" ? 1 : -1;
     if (type === "King") this.importance = 10000 * multiplier;
-    else if (type === "Queen") this.importance = 1000 * multiplier;
+    else if (type === "Queen") this.importance = 2000 * multiplier;
     else if (type === "Knight") this.importance = 200 * multiplier;
     else if (type === "Rook") this.importance = 150 * multiplier;
     else if (type === "Bishop") this.importance = 150 * multiplier;

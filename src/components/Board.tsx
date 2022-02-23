@@ -101,16 +101,14 @@ const Board: React.FC = () => {
       let { score: scoreToSend, moveToMake } = MinMax(
         newBoard,
         "B",
-        4,
+        2,
         -100000,
         100000
       );
-      console.log("\n\n\n\n\n\n\n\n\n\n");
       if (scoreToSend === 100000) {
         alert("CheckMate! You defeated the AI :)");
         return;
       }
-      console.log(scoreToSend, moveToMake);
       setBoard((previousBoard) => {
         let newBoard = previousBoard.map((inner) => inner.slice());
         newBoard[moveToMake.x][moveToMake.y] =
@@ -144,9 +142,9 @@ const Board: React.FC = () => {
   return (
     <div>
       <section className="app_board" style={{ margin: "auto" }}>
-        {board.map((rows: Piece[][] | any, i: number) => {
-          return rows.map((col: Piece[], k: number) => {
-            return (
+        {board.map((rows: Piece[][] | any, i: number) => (
+          <span className="row">
+            {rows.map((col: Piece[], k: number) => (
               <Square
                 clickNothing={clickNothing}
                 k={k}
@@ -156,9 +154,9 @@ const Board: React.FC = () => {
                 handleClick={handleClick}
                 active={canMoveToHighlighted[i][k]}
               />
-            );
-          });
-        })}
+            ))}
+          </span>
+        ))}
       </section>
     </div>
   );
