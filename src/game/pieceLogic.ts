@@ -645,7 +645,7 @@ export const Pawn = (
   let importance: number = 50;
   Board[i][j].turnsSinceLastMove++;
   // console.log(i, j, Board, turn);
-  if (turn === "W") {
+  if (turn === "W" && i !== 0) {
     // if turn is white, pawns move up.
     if (Board[i - 1][j] === null) {
       let newBoard = Board.map((inner) => inner.slice());
@@ -726,7 +726,7 @@ export const Pawn = (
     }
   }
 
-  if (turn === "B") {
+  if (turn === "B" && i !== 7) {
     // if turn is black, pawns move below.
     if (Board[i + 1][j] === null) {
       let newBoard = Board.map((inner) => inner.slice());
