@@ -4,6 +4,9 @@ import { valueOfPiece, isUnderCheck } from "./pieceLogic";
 // These functions are same as the ones in pieceLogic.ts but
 // these don't change the pieces' canMoveTo property
 
+// Increasing value of this variable makes the AI more aggressive
+const CAPTURE_MULTIPLIER = 0.5;
+
 export const PawnScore = (i: number, j: number, Board: (Piece | any)[][]) => {
   const turn = Board[i][j].color;
   let importance: number = 50;
@@ -15,7 +18,7 @@ export const PawnScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i - 1][j - 1] = Board[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(upLeft.type);
+          importance += valueOfPiece(upLeft.type) * CAPTURE_MULTIPLIER;
       }
       /*
       Removing En Passant for AI for now
@@ -44,7 +47,7 @@ export const PawnScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i - 1][j + 1] = Board[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(upRight.type);
+          importance += valueOfPiece(upRight.type) * CAPTURE_MULTIPLIER;
       }
       /*
       Removing En Passant for AI for now
@@ -77,7 +80,7 @@ export const PawnScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i + 1][j - 1] = Board[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(upLeft.type);
+          importance += valueOfPiece(upLeft.type) * CAPTURE_MULTIPLIER;
       }
       /*
       Removing En Passant for AI for now
@@ -106,7 +109,7 @@ export const PawnScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i + 1][j + 1] = Board[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(upRight.type);
+          importance += valueOfPiece(upRight.type) * CAPTURE_MULTIPLIER;
       }
       /*
       Removing En Passant for AI for now
@@ -160,7 +163,7 @@ export const RookScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       if (piece) {
         if (piece.color === turn) break;
         else if (!doesThisVerticalMoveResultInCheck(r, j))
-          importance += valueOfPiece(piece.type);
+          importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
         break;
       }
     }
@@ -173,7 +176,7 @@ export const RookScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       if (piece) {
         if (piece.color === turn) break;
         else if (!doesThisVerticalMoveResultInCheck(r, j))
-          importance += valueOfPiece(piece.type);
+          importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
         break;
       }
     }
@@ -186,7 +189,7 @@ export const RookScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       if (piece) {
         if (piece.color === turn) break;
         else if (!doesThisHorizontalMoveResultInCheck(i, r))
-          importance += valueOfPiece(piece.type);
+          importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
         break;
       }
     }
@@ -199,7 +202,7 @@ export const RookScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       if (piece) {
         if (piece.color === turn) break;
         else if (!doesThisHorizontalMoveResultInCheck(i, r))
-          importance += valueOfPiece(piece.type);
+          importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
         break;
       }
     }
@@ -227,7 +230,7 @@ export const BishopScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       if (piece) {
         if (piece.color === Board[i][j].color) break;
         else if (!isUnderCheckIfThisMoveHappens(r))
-          importance += valueOfPiece(piece.type);
+          importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
         break;
       }
     } else break;
@@ -248,7 +251,7 @@ export const BishopScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       if (piece) {
         if (piece.color === Board[i][j].color) break;
         else if (!isUnderCheckIfThisMoveHappens(r))
-          importance += valueOfPiece(piece.type);
+          importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
         break;
       }
     } else break;
@@ -269,7 +272,7 @@ export const BishopScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       if (piece) {
         if (piece.color === Board[i][j].color) break;
         else if (!isUnderCheckIfThisMoveHappens(r))
-          importance += valueOfPiece(piece.type);
+          importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
         break;
       }
     }
@@ -290,7 +293,7 @@ export const BishopScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       if (piece) {
         if (piece.color === Board[i][j].color) break;
         else if (!isUnderCheckIfThisMoveHappens(r))
-          importance += valueOfPiece(piece.type);
+          importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
         break;
       }
     } else break;
@@ -337,7 +340,7 @@ export const KingScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       newBoard[i - 1][j] = Board[i][j];
       newBoard[i][j] = null;
       if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-        if (piece) importance += valueOfPiece(piece.type);
+        if (piece) importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
     }
     if (j >= 1) {
       const piece = Board[i - 1][j - 1];
@@ -347,7 +350,8 @@ export const KingScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i - 1][j - 1] = Board[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          if (piece) importance += valueOfPiece(piece.type);
+          if (piece)
+            importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
       }
     }
     if (j <= 6) {
@@ -358,7 +362,8 @@ export const KingScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i - 1][j + 1] = Board[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          if (piece) importance += valueOfPiece(piece.type);
+          if (piece)
+            importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
       }
     }
   }
@@ -371,7 +376,7 @@ export const KingScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       newBoard[i + 1][j] = Board[i][j];
       newBoard[i][j] = null;
       if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-        if (piece) importance += valueOfPiece(piece.type);
+        if (piece) importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
     }
 
     if (j >= 1) {
@@ -382,7 +387,8 @@ export const KingScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i + 1][j - 1] = Board[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          if (piece) importance += valueOfPiece(piece.type);
+          if (piece)
+            importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
       }
     }
 
@@ -394,7 +400,8 @@ export const KingScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i + 1][j + 1] = Board[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          if (piece) importance += valueOfPiece(piece.type);
+          if (piece)
+            importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
       }
     }
   }
@@ -407,7 +414,7 @@ export const KingScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       newBoard[i][j - 1] = Board[i][j];
       newBoard[i][j] = null;
       if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-        if (piece) importance += valueOfPiece(piece.type);
+        if (piece) importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
     }
   }
 
@@ -419,7 +426,7 @@ export const KingScore = (i: number, j: number, Board: (Piece | any)[][]) => {
       newBoard[i][j + 1] = Board[i][j];
       newBoard[i][j] = null;
       if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-        if (piece) importance += valueOfPiece(piece.type);
+        if (piece) importance += valueOfPiece(piece.type) * CAPTURE_MULTIPLIER;
     }
   }
   importance *= turn === "W" ? 1 : -1;
@@ -443,7 +450,7 @@ export const KnightScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i - 2][j - 1] = newBoard[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(left.type);
+          importance += valueOfPiece(left.type) * CAPTURE_MULTIPLIER;
       }
     }
     if (j <= 6) {
@@ -454,7 +461,7 @@ export const KnightScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i - 2][j + 1] = newBoard[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(right.type);
+          importance += valueOfPiece(right.type) * CAPTURE_MULTIPLIER;
       }
     }
   }
@@ -472,7 +479,7 @@ export const KnightScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i + 2][j - 1] = newBoard[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(left.type);
+          importance += valueOfPiece(left.type) * CAPTURE_MULTIPLIER;
       }
     }
     if (j <= 6) {
@@ -483,7 +490,7 @@ export const KnightScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i + 2][j + 1] = newBoard[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(right.type);
+          importance += valueOfPiece(right.type) * CAPTURE_MULTIPLIER;
       }
     }
   }
@@ -502,7 +509,7 @@ export const KnightScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i - 1][j - 2] = newBoard[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(left.type);
+          importance += valueOfPiece(left.type) * CAPTURE_MULTIPLIER;
       }
     }
     if (i <= 6) {
@@ -513,7 +520,7 @@ export const KnightScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i + 1][j - 2] = newBoard[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(right.type);
+          importance += valueOfPiece(right.type) * CAPTURE_MULTIPLIER;
       }
     }
   }
@@ -529,7 +536,7 @@ export const KnightScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i - 1][j + 2] = newBoard[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(left.type);
+          importance += valueOfPiece(left.type) * CAPTURE_MULTIPLIER;
       }
     }
     if (i <= 6) {
@@ -540,7 +547,7 @@ export const KnightScore = (i: number, j: number, Board: (Piece | any)[][]) => {
         newBoard[i + 1][j + 2] = newBoard[i][j];
         newBoard[i][j] = null;
         if (!isUnderCheck(newBoard, turn === "W" ? "B" : "W"))
-          importance += valueOfPiece(right.type);
+          importance += valueOfPiece(right.type) * CAPTURE_MULTIPLIER;
       }
     }
   }
